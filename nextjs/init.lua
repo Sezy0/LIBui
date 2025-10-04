@@ -496,16 +496,23 @@ function NextUI:Window(config)
     local SettingsLayout = Instance.new("UIListLayout")
     SettingsLayout.Parent = SettingsContent
     SettingsLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    SettingsLayout.Padding = UDim.new(0, 10)
+    SettingsLayout.Padding = UDim.new(0, 12)
+
+    local SettingsPadding = Instance.new("UIPadding")
+    SettingsPadding.Parent = SettingsContent
+    SettingsPadding.PaddingLeft = UDim.new(0, 12)
+    SettingsPadding.PaddingRight = UDim.new(0, 12)
+    SettingsPadding.PaddingTop = UDim.new(0, 12)
+    SettingsPadding.PaddingBottom = UDim.new(0, 12)
 
     SettingsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        SettingsContent.CanvasSize = UDim2.new(0, 0, 0, SettingsLayout.AbsoluteContentSize.Y + 20)
+        SettingsContent.CanvasSize = UDim2.new(0, 0, 0, SettingsLayout.AbsoluteContentSize.Y + 24)
     end)
 
     -- Keybind Section
     local KeybindSection = Instance.new("Frame")
     KeybindSection.Parent = SettingsContent
-    KeybindSection.Size = UDim2.new(1, -20, 0, 85)
+    KeybindSection.Size = UDim2.new(1, 0, 0, 90)
     KeybindSection.BackgroundColor3 = Theme.Background
     KeybindSection.BorderSizePixel = 0
     KeybindSection.LayoutOrder = 1
@@ -601,7 +608,7 @@ function NextUI:Window(config)
     -- About Section
     local AboutSection = Instance.new("Frame")
     AboutSection.Parent = SettingsContent
-    AboutSection.Size = UDim2.new(1, -20, 0, 110)
+    AboutSection.Size = UDim2.new(1, 0, 0, 115)
     AboutSection.BackgroundColor3 = Theme.Background
     AboutSection.BorderSizePixel = 0
     AboutSection.LayoutOrder = 2
