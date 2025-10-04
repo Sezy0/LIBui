@@ -1123,7 +1123,7 @@ function NextUI:Window(config)
     HomeBarContainer.Name = "HomeBarContainer"
     HomeBarContainer.Parent = MainFrame  -- PARENTED TO MAINFRAME NOW!
     HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0)
-    HomeBarContainer.Position = UDim2.new(0.5, 0, 1, 15)  -- Just below MainFrame bottom
+    HomeBarContainer.Position = UDim2.new(0.5, 0, 1, 5)  -- Just 5px below MainFrame bottom
     HomeBarContainer.Size = UDim2.new(1, 0, 0, 25)
     HomeBarContainer.BackgroundTransparency = 1
     HomeBarContainer.BorderSizePixel = 0
