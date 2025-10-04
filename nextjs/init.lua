@@ -123,10 +123,6 @@ function NextUI:ValidateKey(inputKey, keyUrl)
         validKey = validKey:gsub("%s+", ""):lower()
         local normalizedInput = inputKey:gsub("%s+", ""):lower()
         
-        print("[NextUI Debug] Input key:", "'" .. normalizedInput .. "'")
-        print("[NextUI Debug] Valid key:", "'" .. validKey .. "'")
-        print("[NextUI Debug] Match:", normalizedInput == validKey)
-        
         if normalizedInput == validKey then
             authenticated = true
             authKey = inputKey
@@ -134,6 +130,7 @@ function NextUI:ValidateKey(inputKey, keyUrl)
         end
     else
         warn("[NextUI] Failed to fetch key from: " .. keyUrl)
+        warn("[NextUI] Make sure HttpService is enabled in game settings!")
     end
 
     return false
@@ -388,19 +385,6 @@ function NextUI:Auth(config)
         StatusLabel.TextColor3 = Color3.fromRGB(255, 200, 80)
         
         task.wait(0.5)
-        
-        -- Check if HttpService is enabled
-        local httpEnabled = pcall(function()
-            HttpService:GetAsync("https://httpbin.org/get")
-        end)
-        
-        if not httpEnabled then
-            StatusLabel.Text = "HTTP requests not enabled! Check game settings"
-            StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
-            VerifyButton.Text = "Verify"
-            verifying = false
-            return
-        end
         
         local success = NextUI:ValidateKey(inputKey, keyUrl)
         
