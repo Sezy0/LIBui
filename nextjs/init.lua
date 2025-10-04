@@ -389,6 +389,19 @@ function NextUI:Auth(config)
         
         task.wait(0.5)
         
+        -- Check if HttpService is enabled
+        local httpEnabled = pcall(function()
+            HttpService:GetAsync("https://httpbin.org/get")
+        end)
+        
+        if not httpEnabled then
+            StatusLabel.Text = "HTTP requests not enabled! Check game settings"
+            StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+            VerifyButton.Text = "Verify"
+            verifying = false
+            return
+        end
+        
         local success = NextUI:ValidateKey(inputKey, keyUrl)
         
         if success then
