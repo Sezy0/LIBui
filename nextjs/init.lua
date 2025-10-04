@@ -105,7 +105,7 @@ local Players = game:GetService("Players")
 local authenticated = false
 local authKey = ""
 
--- Validate key
+-- Validate key (Rayfield-style approach)
 function NextUI:ValidateKey(inputKey, keyUrl)
     -- Bypass mode (no key system)
     if keyUrl == nil then
@@ -114,45 +114,29 @@ function NextUI:ValidateKey(inputKey, keyUrl)
         return true
     end
 
-    -- Try to detect whether HTTP requests are allowed (Studio/Game Settings)
-    local httpEnabled = true
-    do
-        local ok, enabled = pcall(function()
-            return HttpService.HttpEnabled
-        end)
-        if ok and enabled == false then
-            httpEnabled = false
-        end
-    end
-
-    if not httpEnabled then
-        warn("[NextUI] HttpService.HttpEnabled = false. Enable Game Settings → Security → Allow HTTP Requests.")
-        return false
-    end
-
-    -- Fetch key using game:HttpGet() for maximum compatibility (same as Rayfield)
-    local success, validKey = pcall(function()
-        return game:HttpGet(keyUrl)
+    -- Fetch and normalize the valid key from URL (same as Rayfield)
+    local validKey = ""
+    local success, response = pcall(function()
+        return tostring(game:HttpGet(keyUrl):gsub("[\n\r]", " "))
     end)
 
     if not success then
         warn("[NextUI] Failed to fetch key from: " .. tostring(keyUrl))
-        warn("[NextUI] Error: " .. tostring(validKey))
+        warn("[NextUI] Error: " .. tostring(response))
         warn("[NextUI] Make sure HttpService is enabled in Game Settings → Security → Allow HTTP Requests")
-        warn("[NextUI] Also check if the URL is accessible and not blocked by firewall/network.")
         return false
     end
+
+    -- Remove all whitespace (same as Rayfield line 1770)
+    validKey = string.gsub(response, " ", "")
 
     if not validKey or validKey == "" then
-        warn("[NextUI] Received empty response from key URL: " .. tostring(keyUrl))
+        warn("[NextUI] Received empty key from URL: " .. tostring(keyUrl))
         return false
     end
 
-    -- Normalize both keys: remove ALL whitespace (spaces, newlines, tabs, etc.) and convert to lowercase
-    validKey = tostring(validKey):gsub("[%s\n\r\t]+", ""):lower()
-    local normalizedInput = tostring(inputKey):gsub("[%s\n\r\t]+", ""):lower()
-
-    if normalizedInput == validKey and validKey ~= "" then
+    -- Strict key comparison (same as Rayfield line 1873)
+    if inputKey == validKey then
         authenticated = true
         authKey = inputKey
         return true
