@@ -392,9 +392,164 @@ function NextUI:Window(config)
         SettingsButton.TextColor3 = Theme.TextSecondary
     end)
 
-    SettingsButton.MouseButton1Click:Connect(function()
-        -- You can add settings logic here
-        NextUI:Notification("Settings", "Settings clicked!", 2)
+    -- Settings Panel (overlay)
+    local SettingsPanel = Instance.new("Frame")
+    SettingsPanel.Name = "SettingsPanel"
+    SettingsPanel.Parent = MainFrame
+    SettingsPanel.Position = UDim2.new(0, 0, 0, 0)
+    SettingsPanel.Size = UDim2.new(1, 0, 1, 0)
+    SettingsPanel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    SettingsPanel.BackgroundTransparency = 0.4
+    SettingsPanel.BorderSizePixel = 0
+    SettingsPanel.Visible = false
+    SettingsPanel.ZIndex = 50
+
+    -- Settings Content Box
+    local SettingsBox = Instance.new("Frame")
+    SettingsBox.Parent = SettingsPanel
+    SettingsBox.AnchorPoint = Vector2.new(0.5, 0.5)
+    SettingsBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+    SettingsBox.Size = UDim2.new(0, 400, 0, 300)
+    SettingsBox.BackgroundColor3 = Theme.Surface
+    SettingsBox.BorderSizePixel = 0
+    SettingsBox.ZIndex = 51
+
+    local SettingsBoxCorner = Instance.new("UICorner")
+    SettingsBoxCorner.CornerRadius = UDim.new(0, 12)
+    SettingsBoxCorner.Parent = SettingsBox
+
+    local SettingsBoxStroke = Instance.new("UIStroke")
+    SettingsBoxStroke.Parent = SettingsBox
+    SettingsBoxStroke.Color = Theme.Border
+    SettingsBoxStroke.Thickness = 1
+    SettingsBoxStroke.Transparency = 0.7
+
+    -- Settings Header
+    local SettingsHeader = Instance.new("Frame")
+    SettingsHeader.Parent = SettingsBox
+    SettingsHeader.Size = UDim2.new(1, 0, 0, 50)
+    SettingsHeader.BackgroundColor3 = Theme.Background
+    SettingsHeader.BorderSizePixel = 0
+    SettingsHeader.ZIndex = 51
+
+    local SettingsHeaderCorner = Instance.new("UICorner")
+    SettingsHeaderCorner.CornerRadius = UDim.new(0, 12)
+    SettingsHeaderCorner.Parent = SettingsHeader
+
+    local SettingsHeaderCover = Instance.new("Frame")
+    SettingsHeaderCover.Parent = SettingsHeader
+    SettingsHeaderCover.Position = UDim2.new(0, 0, 0.5, 0)
+    SettingsHeaderCover.Size = UDim2.new(1, 0, 0.5, 0)
+    SettingsHeaderCover.BackgroundColor3 = Theme.Background
+    SettingsHeaderCover.BorderSizePixel = 0
+    SettingsHeaderCover.ZIndex = 51
+
+    local SettingsTitle = Instance.new("TextLabel")
+    SettingsTitle.Parent = SettingsHeader
+    SettingsTitle.Position = UDim2.new(0, 20, 0, 0)
+    SettingsTitle.Size = UDim2.new(0.8, 0, 1, 0)
+    SettingsTitle.BackgroundTransparency = 1
+    SettingsTitle.Font = Enum.Font.GothamBold
+    SettingsTitle.Text = "⚙ Settings"
+    SettingsTitle.TextColor3 = Theme.Text
+    SettingsTitle.TextSize = 16
+    SettingsTitle.TextXAlignment = Enum.TextXAlignment.Left
+    SettingsTitle.ZIndex = 51
+
+    local CloseSettings = Instance.new("TextButton")
+    CloseSettings.Parent = SettingsHeader
+    CloseSettings.AnchorPoint = Vector2.new(1, 0.5)
+    CloseSettings.Position = UDim2.new(1, -15, 0.5, 0)
+    CloseSettings.Size = UDim2.new(0, 30, 0, 30)
+    CloseSettings.BackgroundColor3 = Theme.SurfaceHover
+    CloseSettings.BorderSizePixel = 0
+    CloseSettings.Text = "×"
+    CloseSettings.Font = Enum.Font.GothamBold
+    CloseSettings.TextColor3 = Theme.TextSecondary
+    CloseSettings.TextSize = 18
+    CloseSettings.ZIndex = 51
+
+    local CloseSettingsCorner = Instance.new("UICorner")
+    CloseSettingsCorner.CornerRadius = UDim.new(0, 6)
+    CloseSettingsCorner.Parent = CloseSettings
+
+    CloseSettings.MouseEnter:Connect(function()
+        Tween(CloseSettings, {BackgroundColor3 = Theme.Error})
+    end)
+
+    CloseSettings.MouseLeave:Connect(function()
+        Tween(CloseSettings, {BackgroundColor3 = Theme.SurfaceHover})
+    end)
+
+    -- Settings Content
+    local SettingsContent = Instance.new("Frame")
+    SettingsContent.Parent = SettingsBox
+    SettingsContent.Position = UDim2.new(0, 0, 0, 50)
+    SettingsContent.Size = UDim2.new(1, 0, 1, -50)
+    SettingsContent.BackgroundTransparency = 1
+    SettingsContent.ZIndex = 51
+
+    -- About Section
+    local AboutSection = Instance.new("Frame")
+    AboutSection.Parent = SettingsContent
+    AboutSection.Position = UDim2.new(0, 20, 0, 20)
+    AboutSection.Size = UDim2.new(1, -40, 0, 180)
+    AboutSection.BackgroundColor3 = Theme.Background
+    AboutSection.BorderSizePixel = 0
+    AboutSection.ZIndex = 51
+
+    local AboutCorner = Instance.new("UICorner")
+    AboutCorner.CornerRadius = UDim.new(0, 10)
+    AboutCorner.Parent = AboutSection
+
+    local AboutTitle = Instance.new("TextLabel")
+    AboutTitle.Parent = AboutSection
+    AboutTitle.Position = UDim2.new(0, 15, 0, 15)
+    AboutTitle.Size = UDim2.new(1, -30, 0, 20)
+    AboutTitle.BackgroundTransparency = 1
+    AboutTitle.Font = Enum.Font.GothamBold
+    AboutTitle.Text = "About NextUI"
+    AboutTitle.TextColor3 = Theme.Text
+    AboutTitle.TextSize = 14
+    AboutTitle.TextXAlignment = Enum.TextXAlignment.Left
+    AboutTitle.ZIndex = 51
+
+    local AboutInfo = Instance.new("TextLabel")
+    AboutInfo.Parent = AboutSection
+    AboutInfo.Position = UDim2.new(0, 15, 0, 45)
+    AboutInfo.Size = UDim2.new(1, -30, 0, 120)
+    AboutInfo.BackgroundTransparency = 1
+    AboutInfo.Font = Enum.Font.Gotham
+    AboutInfo.Text = "NextUI Library\nDark Neumorphism Theme\n\n✨ Created by FoxZy\n\nA modern, sleek UI library for Roblox\nwith smooth animations and clean design."
+    AboutInfo.TextColor3 = Theme.TextSecondary
+    AboutInfo.TextSize = 12
+    AboutInfo.TextXAlignment = Enum.TextXAlignment.Left
+    AboutInfo.TextYAlignment = Enum.TextYAlignment.Top
+    AboutInfo.TextWrapped = true
+    AboutInfo.ZIndex = 51
+
+    -- Toggle settings panel
+    local function toggleSettings()
+        SettingsPanel.Visible = not SettingsPanel.Visible
+        if SettingsPanel.Visible then
+            SettingsBox.Size = UDim2.new(0, 0, 0, 0)
+            Tween(SettingsBox, {Size = UDim2.new(0, 400, 0, 300)}, 0.3)
+        end
+    end
+
+    SettingsButton.MouseButton1Click:Connect(toggleSettings)
+    CloseSettings.MouseButton1Click:Connect(toggleSettings)
+    
+    -- Click outside to close
+    SettingsPanel.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.Position.Y < SettingsBox.AbsolutePosition.Y or 
+               input.Position.Y > SettingsBox.AbsolutePosition.Y + SettingsBox.AbsoluteSize.Y or
+               input.Position.X < SettingsBox.AbsolutePosition.X or 
+               input.Position.X > SettingsBox.AbsolutePosition.X + SettingsBox.AbsoluteSize.X then
+                toggleSettings()
+            end
+        end
     end)
 
     -- Sidebar tabs container (adjusted size to fit above profile)
