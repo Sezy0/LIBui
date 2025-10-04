@@ -409,7 +409,7 @@ function NextUI:Window(config)
     SettingsBox.Parent = SettingsPanel
     SettingsBox.AnchorPoint = Vector2.new(0.5, 0.5)
     SettingsBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-    SettingsBox.Size = UDim2.new(0, 400, 0, 300)
+    SettingsBox.Size = UDim2.new(0, 400, 0, 320)
     SettingsBox.BackgroundColor3 = Theme.Surface
     SettingsBox.BorderSizePixel = 0
     SettingsBox.ZIndex = 51
@@ -489,11 +489,107 @@ function NextUI:Window(config)
     SettingsContent.BackgroundTransparency = 1
     SettingsContent.ZIndex = 51
 
-    -- About Section
+    -- Keybind Section
+    local KeybindSection = Instance.new("Frame")
+    KeybindSection.Parent = SettingsContent
+    KeybindSection.Position = UDim2.new(0, 20, 0, 20)
+    KeybindSection.Size = UDim2.new(1, -40, 0, 110)
+    KeybindSection.BackgroundColor3 = Theme.Background
+    KeybindSection.BorderSizePixel = 0
+    KeybindSection.ZIndex = 51
+
+    local KeybindCorner = Instance.new("UICorner")
+    KeybindCorner.CornerRadius = UDim.new(0, 10)
+    KeybindCorner.Parent = KeybindSection
+
+    local KeybindTitle = Instance.new("TextLabel")
+    KeybindTitle.Parent = KeybindSection
+    KeybindTitle.Position = UDim2.new(0, 15, 0, 15)
+    KeybindTitle.Size = UDim2.new(1, -30, 0, 20)
+    KeybindTitle.BackgroundTransparency = 1
+    KeybindTitle.Font = Enum.Font.GothamBold
+    KeybindTitle.Text = "⌨ Toggle UI Keybind"
+    KeybindTitle.TextColor3 = Theme.Text
+    KeybindTitle.TextSize = 14
+    KeybindTitle.TextXAlignment = Enum.TextXAlignment.Left
+    KeybindTitle.ZIndex = 51
+
+    local KeybindDesc = Instance.new("TextLabel")
+    KeybindDesc.Parent = KeybindSection
+    KeybindDesc.Position = UDim2.new(0, 15, 0, 40)
+    KeybindDesc.Size = UDim2.new(1, -30, 0, 15)
+    KeybindDesc.BackgroundTransparency = 1
+    KeybindDesc.Font = Enum.Font.Gotham
+    KeybindDesc.Text = "Press any key to change (single character only)"
+    KeybindDesc.TextColor3 = Theme.TextSecondary
+    KeybindDesc.TextSize = 11
+    KeybindDesc.TextXAlignment = Enum.TextXAlignment.Left
+    KeybindDesc.ZIndex = 51
+
+    -- Keybind Button
+    local toggleKey = Enum.KeyCode.G  -- Default key
+    local KeybindButton = Instance.new("TextButton")
+    KeybindButton.Parent = KeybindSection
+    KeybindButton.Position = UDim2.new(0, 15, 0, 65)
+    KeybindButton.Size = UDim2.new(0, 80, 0, 32)
+    KeybindButton.BackgroundColor3 = Theme.Surface
+    KeybindButton.BorderSizePixel = 0
+    KeybindButton.Font = Enum.Font.GothamBold
+    KeybindButton.Text = "G"
+    KeybindButton.TextColor3 = Theme.Accent
+    KeybindButton.TextSize = 16
+    KeybindButton.ZIndex = 51
+
+    local KeybindButtonCorner = Instance.new("UICorner")
+    KeybindButtonCorner.CornerRadius = UDim.new(0, 8)
+    KeybindButtonCorner.Parent = KeybindButton
+
+    local KeybindButtonStroke = Instance.new("UIStroke")
+    KeybindButtonStroke.Parent = KeybindButton
+    KeybindButtonStroke.Color = Theme.Border
+    KeybindButtonStroke.Thickness = 1
+    KeybindButtonStroke.Transparency = 0.5
+
+    local listening = false
+    KeybindButton.MouseButton1Click:Connect(function()
+        if listening then return end
+        listening = true
+        KeybindButton.Text = "..."
+        KeybindButtonStroke.Color = Theme.Accent
+        
+        local conn
+        conn = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if input.UserInputType == Enum.UserInputType.Keyboard then
+                local keyName = input.KeyCode.Name
+                -- Only accept single character keys
+                if #keyName == 1 then
+                    toggleKey = input.KeyCode
+                    KeybindButton.Text = keyName:upper()
+                    KeybindButtonStroke.Color = Theme.Border
+                    listening = false
+                    conn:Disconnect()
+                end
+            end
+        end)
+    end)
+
+    KeybindButton.MouseEnter:Connect(function()
+        if not listening then
+            Tween(KeybindButton, {BackgroundColor3 = Theme.SurfaceHover})
+        end
+    end)
+
+    KeybindButton.MouseLeave:Connect(function()
+        if not listening then
+            Tween(KeybindButton, {BackgroundColor3 = Theme.Surface})
+        end
+    end)
+
+    -- About Section (moved down)
     local AboutSection = Instance.new("Frame")
     AboutSection.Parent = SettingsContent
-    AboutSection.Position = UDim2.new(0, 20, 0, 20)
-    AboutSection.Size = UDim2.new(1, -40, 0, 180)
+    AboutSection.Position = UDim2.new(0, 20, 0, 145)
+    AboutSection.Size = UDim2.new(1, -40, 0, 135)
     AboutSection.BackgroundColor3 = Theme.Background
     AboutSection.BorderSizePixel = 0
     AboutSection.ZIndex = 51
@@ -504,7 +600,7 @@ function NextUI:Window(config)
 
     local AboutTitle = Instance.new("TextLabel")
     AboutTitle.Parent = AboutSection
-    AboutTitle.Position = UDim2.new(0, 15, 0, 15)
+    AboutTitle.Position = UDim2.new(0, 15, 0, 12)
     AboutTitle.Size = UDim2.new(1, -30, 0, 20)
     AboutTitle.BackgroundTransparency = 1
     AboutTitle.Font = Enum.Font.GothamBold
@@ -516,13 +612,13 @@ function NextUI:Window(config)
 
     local AboutInfo = Instance.new("TextLabel")
     AboutInfo.Parent = AboutSection
-    AboutInfo.Position = UDim2.new(0, 15, 0, 45)
-    AboutInfo.Size = UDim2.new(1, -30, 0, 120)
+    AboutInfo.Position = UDim2.new(0, 15, 0, 38)
+    AboutInfo.Size = UDim2.new(1, -30, 0, 90)
     AboutInfo.BackgroundTransparency = 1
     AboutInfo.Font = Enum.Font.Gotham
     AboutInfo.Text = "NextUI Library\nDark Neumorphism Theme\n\n✨ Created by FoxZy\n\nA modern, sleek UI library for Roblox\nwith smooth animations and clean design."
     AboutInfo.TextColor3 = Theme.TextSecondary
-    AboutInfo.TextSize = 12
+    AboutInfo.TextSize = 11
     AboutInfo.TextXAlignment = Enum.TextXAlignment.Left
     AboutInfo.TextYAlignment = Enum.TextYAlignment.Top
     AboutInfo.TextWrapped = true
@@ -533,9 +629,17 @@ function NextUI:Window(config)
         SettingsPanel.Visible = not SettingsPanel.Visible
         if SettingsPanel.Visible then
             SettingsBox.Size = UDim2.new(0, 0, 0, 0)
-            Tween(SettingsBox, {Size = UDim2.new(0, 400, 0, 300)}, 0.3)
+            Tween(SettingsBox, {Size = UDim2.new(0, 400, 0, 320)}, 0.3)
         end
     end
+
+    -- Toggle UI visibility with keybind
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        if input.KeyCode == toggleKey then
+            MainFrame.Visible = not MainFrame.Visible
+        end
+    end)
 
     SettingsButton.MouseButton1Click:Connect(toggleSettings)
     CloseSettings.MouseButton1Click:Connect(toggleSettings)
