@@ -304,12 +304,120 @@ function NextUI:Window(config)
     SidebarDivider.BackgroundColor3 = Theme.Border
     SidebarDivider.BorderSizePixel = 0
 
-    -- Sidebar tabs container
+    -- Profile section at bottom of sidebar
+    local ProfileSection = Instance.new("Frame")
+    ProfileSection.Name = "ProfileSection"
+    ProfileSection.Parent = Sidebar
+    ProfileSection.Position = UDim2.new(0, 0, 1, -55)
+    ProfileSection.Size = UDim2.new(1, 0, 0, 55)
+    ProfileSection.BackgroundColor3 = Theme.Background
+    ProfileSection.BorderSizePixel = 0
+
+    local ProfileCorner = Instance.new("UICorner")
+    ProfileCorner.CornerRadius = UDim.new(0, 8)
+    ProfileCorner.Parent = ProfileSection
+
+    -- Top divider line
+    local ProfileDivider = Instance.new("Frame")
+    ProfileDivider.Parent = ProfileSection
+    ProfileDivider.Position = UDim2.new(0, 8, 0, 0)
+    ProfileDivider.Size = UDim2.new(1, -16, 0, 1)
+    ProfileDivider.BackgroundColor3 = Theme.Border
+    ProfileDivider.BorderSizePixel = 0
+
+    -- Get player info
+    local player = game.Players.LocalPlayer
+    local userId = player.UserId
+    local username = player.Name
+    local displayName = player.DisplayName
+
+    -- Avatar
+    local Avatar = Instance.new("ImageLabel")
+    Avatar.Parent = ProfileSection
+    Avatar.Position = UDim2.new(0, 8, 0.5, 0)
+    Avatar.AnchorPoint = Vector2.new(0, 0.5)
+    Avatar.Size = UDim2.new(0, 36, 0, 36)
+    Avatar.BackgroundColor3 = Theme.Surface
+    Avatar.BorderSizePixel = 0
+    Avatar.Image = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=48&height=48&format=png"
+
+    local AvatarCorner = Instance.new("UICorner")
+    AvatarCorner.CornerRadius = UDim.new(1, 0)
+    AvatarCorner.Parent = Avatar
+
+    -- Username container
+    local UsernameFrame = Instance.new("Frame")
+    UsernameFrame.Parent = ProfileSection
+    UsernameFrame.Position = UDim2.new(0, 50, 0.5, 0)
+    UsernameFrame.AnchorPoint = Vector2.new(0, 0.5)
+    UsernameFrame.Size = UDim2.new(0, 60, 0, 36)
+    UsernameFrame.BackgroundTransparency = 1
+
+    -- Display name
+    local DisplayNameLabel = Instance.new("TextLabel")
+    DisplayNameLabel.Parent = UsernameFrame
+    DisplayNameLabel.Position = UDim2.new(0, 0, 0, 2)
+    DisplayNameLabel.Size = UDim2.new(1, 0, 0, 16)
+    DisplayNameLabel.BackgroundTransparency = 1
+    DisplayNameLabel.Font = Enum.Font.GothamBold
+    DisplayNameLabel.Text = displayName
+    DisplayNameLabel.TextColor3 = Theme.Text
+    DisplayNameLabel.TextSize = 11
+    DisplayNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    DisplayNameLabel.TextTruncate = Enum.TextTruncate.AtEnd
+
+    -- Username (@username)
+    local UsernameLabel = Instance.new("TextLabel")
+    UsernameLabel.Parent = UsernameFrame
+    UsernameLabel.Position = UDim2.new(0, 0, 0, 18)
+    UsernameLabel.Size = UDim2.new(1, 0, 0, 14)
+    UsernameLabel.BackgroundTransparency = 1
+    UsernameLabel.Font = Enum.Font.Gotham
+    UsernameLabel.Text = "@" .. username
+    UsernameLabel.TextColor3 = Theme.TextTertiary
+    UsernameLabel.TextSize = 9
+    UsernameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    UsernameLabel.TextTruncate = Enum.TextTruncate.AtEnd
+
+    -- Settings gear button
+    local SettingsButton = Instance.new("TextButton")
+    SettingsButton.Parent = ProfileSection
+    SettingsButton.AnchorPoint = Vector2.new(1, 0.5)
+    SettingsButton.Position = UDim2.new(1, -8, 0.5, 0)
+    SettingsButton.Size = UDim2.new(0, 28, 0, 28)
+    SettingsButton.BackgroundColor3 = Theme.SurfaceHover
+    SettingsButton.BorderSizePixel = 0
+    SettingsButton.Text = "⚙"
+    SettingsButton.Font = Enum.Font.GothamBold
+    SettingsButton.TextColor3 = Theme.TextSecondary
+    SettingsButton.TextSize = 16
+    SettingsButton.AutoButtonColor = false
+
+    local SettingsCorner = Instance.new("UICorner")
+    SettingsCorner.CornerRadius = UDim.new(0, 6)
+    SettingsCorner.Parent = SettingsButton
+
+    SettingsButton.MouseEnter:Connect(function()
+        SettingsButton.BackgroundColor3 = Theme.Border
+        SettingsButton.TextColor3 = Theme.Text
+    end)
+
+    SettingsButton.MouseLeave:Connect(function()
+        SettingsButton.BackgroundColor3 = Theme.SurfaceHover
+        SettingsButton.TextColor3 = Theme.TextSecondary
+    end)
+
+    SettingsButton.MouseButton1Click:Connect(function()
+        -- You can add settings logic here
+        NextUI:Notification("Settings", "Settings clicked!", 2)
+    end)
+
+    -- Sidebar tabs container (adjusted size to fit above profile)
     local TabsContainer = Instance.new("ScrollingFrame")
     TabsContainer.Name = "TabsContainer"
     TabsContainer.Parent = Sidebar
     TabsContainer.Position = UDim2.new(0, 10, 0, 10)
-    TabsContainer.Size = UDim2.new(1, -20, 1, -20)
+    TabsContainer.Size = UDim2.new(1, -20, 1, -75)  -- Reduced to make space for profile
     TabsContainer.BackgroundTransparency = 1
     TabsContainer.BorderSizePixel = 0
     TabsContainer.ScrollBarThickness = 0
