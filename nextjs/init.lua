@@ -130,35 +130,27 @@ function NextUI:ValidateKey(inputKey, keyUrl)
         return false
     end
 
-    -- Fetch key using RequestAsync for better control and compatibility
-    local reqOk, responseOrErr = pcall(function()
-        return HttpService:RequestAsync({
-            Url = keyUrl,
-            Method = "GET",
-            Headers = {
-                ["User-Agent"] = "NextUI/1.0 (+roblox)",
-                ["Accept"] = "text/plain,*/*"
-            }
-        })
+    -- Fetch key using game:HttpGet() for maximum compatibility (same as Rayfield)
+    local success, validKey = pcall(function()
+        return game:HttpGet(keyUrl)
     end)
 
-    if not reqOk then
+    if not success then
         warn("[NextUI] Failed to fetch key from: " .. tostring(keyUrl))
-        warn("[NextUI] Error: " .. tostring(responseOrErr))
-        warn("[NextUI] Make sure HttpService is enabled in game settings and outbound traffic isn't blocked by a firewall.")
+        warn("[NextUI] Error: " .. tostring(validKey))
+        warn("[NextUI] Make sure HttpService is enabled in Game Settings → Security → Allow HTTP Requests")
+        warn("[NextUI] Also check if the URL is accessible and not blocked by firewall/network.")
         return false
     end
 
-    local response = responseOrErr
-    if not response.Success then
-        warn(("[NextUI] HTTP %s when fetching key from: %s"):format(tostring(response.StatusCode), tostring(keyUrl)))
+    if not validKey or validKey == "" then
+        warn("[NextUI] Received empty response from key URL: " .. tostring(keyUrl))
         return false
     end
 
-    local validKey = tostring(response.Body or "")
-    -- Normalize both keys: lowercase and remove all whitespace
-    validKey = validKey:gsub("%s+", ""):lower()
-    local normalizedInput = tostring(inputKey):gsub("%s+", ""):lower()
+    -- Normalize both keys: remove ALL whitespace (spaces, newlines, tabs, etc.) and convert to lowercase
+    validKey = tostring(validKey):gsub("[%s\n\r\t]+", ""):lower()
+    local normalizedInput = tostring(inputKey):gsub("[%s\n\r\t]+", ""):lower()
 
     if normalizedInput == validKey and validKey ~= "" then
         authenticated = true
