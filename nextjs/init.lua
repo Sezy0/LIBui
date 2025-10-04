@@ -99,8 +99,48 @@ end
 
 print("[NextUI] ScreenGui created successfully!")
 
+-- Authentication System
+local HttpService = game:GetService("HttpService")
+local authenticated = false
+local authKey = ""
+
+-- Fetch valid key from pastebin
+local function fetchValidKey()
+    local success, result = pcall(function()
+        return HttpService:GetAsync("https://pastebin.com/raw/v2BNczLY")
+    end)
+    if success then
+        return result:gsub("%s+", "") -- Remove whitespace
+    else
+        warn("[NextUI] Failed to fetch key from server")
+        return nil
+    end
+end
+
+-- Validate key
+function NextUI:ValidateKey(inputKey)
+    local validKey = fetchValidKey()
+    if validKey and inputKey == validKey then
+        authenticated = true
+        authKey = inputKey
+        return true
+    end
+    return false
+end
+
+-- Check if authenticated
+function NextUI:IsAuthenticated()
+    return authenticated
+end
+
 -- Main Window Function
 function NextUI:Window(config)
+    -- Check authentication
+    if not authenticated then
+        error("[NextUI] Authentication required! Use NextUI:ValidateKey(key) first.")
+        return nil
+    end
+
     config = config or {}
     local windowTitle = config.Title or "NextUI Window"
     local windowIcon = config.Icon or nil
