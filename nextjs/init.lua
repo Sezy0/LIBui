@@ -3,6 +3,8 @@
 -- Dark Mode + Neumorphism Design
 -- ============================================
 
+print("[NextUI] Loading library...")
+
 local NextUI = {}
 
 -- Services
@@ -77,12 +79,25 @@ local function Tween(object, properties, duration)
     ):Play()
 end
 
--- Create ScreenGui
+-- Create ScreenGui with fallback support
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "NextUI"
-ScreenGui.Parent = game.CoreGui
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.ResetOnSpawn = false
+
+-- Try CoreGui first, fallback to PlayerGui if protected
+local success = pcall(function()
+    ScreenGui.Parent = game:GetService("CoreGui")
+end)
+
+if not success then
+    ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+    print("[NextUI] Using PlayerGui (CoreGui protected)")
+else
+    print("[NextUI] Using CoreGui")
+end
+
+print("[NextUI] ScreenGui created successfully!")
 
 -- Main Window Function
 function NextUI:Window(config)
@@ -779,4 +794,5 @@ function NextUI:Notification(title, message, duration)
     NotifFrame:Destroy()
 end
 
+print("[NextUI] Library loaded successfully! Ready to use.")
 return NextUI
