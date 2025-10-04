@@ -103,6 +103,7 @@ print("[NextUI] ScreenGui created successfully!")
 function NextUI:Window(config)
     config = config or {}
     local windowTitle = config.Title or "NextUI Window"
+    local windowIcon = config.Icon or nil
     local windowSize = config.Size or UDim2.new(0, 600, 0, 450)
 
     -- Main Container
@@ -162,11 +163,31 @@ function NextUI:Window(config)
     HeaderCover.BackgroundColor3 = Theme.Surface
     HeaderCover.BorderSizePixel = 0
 
+    -- Icon (optional)
+    local titleStartX = 20
+    if windowIcon then
+        local IconImage = Instance.new("ImageLabel")
+        IconImage.Name = "Icon"
+        IconImage.Parent = Header
+        IconImage.Position = UDim2.new(0, 15, 0.5, 0)
+        IconImage.AnchorPoint = Vector2.new(0, 0.5)
+        IconImage.Size = UDim2.new(0, 28, 0, 28)
+        IconImage.BackgroundTransparency = 1
+        IconImage.Image = "rbxassetid://" .. tostring(windowIcon)
+        IconImage.ScaleType = Enum.ScaleType.Fit
+        
+        local IconCorner = Instance.new("UICorner")
+        IconCorner.CornerRadius = UDim.new(0, 6)
+        IconCorner.Parent = IconImage
+        
+        titleStartX = 50  -- Move title to the right if icon exists
+    end
+
     -- Title
     local TitleLabel = Instance.new("TextLabel")
     TitleLabel.Name = "Title"
     TitleLabel.Parent = Header
-    TitleLabel.Position = UDim2.new(0, 20, 0, 0)
+    TitleLabel.Position = UDim2.new(0, titleStartX, 0, 0)
     TitleLabel.Size = UDim2.new(0.7, 0, 1, 0)
     TitleLabel.BackgroundTransparency = 1
     TitleLabel.Font = Enum.Font.GothamBold
