@@ -290,6 +290,22 @@ function NextUI:Auth(config)
     KeyInputStroke.Thickness = 1
     KeyInputStroke.Transparency = 0.5
 
+    -- Verify Button
+    local VerifyButton = Instance.new("TextButton")
+    VerifyButton.Parent = ContentFrame
+    VerifyButton.Position = UDim2.new(0, 0, 0, 110)
+    VerifyButton.Size = UDim2.new(1, 0, 0, 40)
+    VerifyButton.BackgroundColor3 = Color3.fromRGB(80, 200, 120)
+    VerifyButton.BorderSizePixel = 0
+    VerifyButton.Font = Enum.Font.GothamBold
+    VerifyButton.Text = "Verify"
+    VerifyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    VerifyButton.TextSize = 14
+
+    local VerifyCorner = Instance.new("UICorner")
+    VerifyCorner.CornerRadius = UDim.new(0, 8)
+    VerifyCorner.Parent = VerifyButton
+
     -- Get Key Button
     local GetKeyButton = Instance.new("TextButton")
     GetKeyButton.Parent = ContentFrame
@@ -315,7 +331,7 @@ function NextUI:Auth(config)
     -- Status Label
     local StatusLabel = Instance.new("TextLabel")
     StatusLabel.Parent = ContentFrame
-    StatusLabel.Position = UDim2.new(0, 0, 0, 105)
+    StatusLabel.Position = UDim2.new(0, 0, 0, 160)
     StatusLabel.Size = UDim2.new(1, 0, 0, 20)
     StatusLabel.BackgroundTransparency = 1
     StatusLabel.Font = Enum.Font.Gotham
@@ -324,7 +340,15 @@ function NextUI:Auth(config)
     StatusLabel.TextSize = 10
     StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Button Hover Effect
+    -- Button Hover Effects
+    VerifyButton.MouseEnter:Connect(function()
+        Tween(VerifyButton, {BackgroundColor3 = Color3.fromRGB(90, 210, 130)})
+    end)
+
+    VerifyButton.MouseLeave:Connect(function()
+        Tween(VerifyButton, {BackgroundColor3 = Color3.fromRGB(80, 200, 120)})
+    end)
+
     GetKeyButton.MouseEnter:Connect(function()
         Tween(GetKeyButton, {BackgroundColor3 = Color3.fromRGB(35, 35, 35)})
     end)
@@ -342,39 +366,45 @@ function NextUI:Auth(config)
         StatusLabel.Text = ""
     end)
 
-    -- Auto-verify on text change
+    -- Verify Button Click
     local verifying = false
-    KeyInput:GetPropertyChangedSignal("Text"):Connect(function()
-        local inputKey = KeyInput.Text
-        if inputKey == "" or verifying then return end
+    VerifyButton.MouseButton1Click:Connect(function()
+        if verifying then return end
         
-        -- Auto-verify when key length is reasonable (e.g., 3+ characters)
-        if #inputKey >= 3 then
-            verifying = true
-            StatusLabel.Text = "Verifying..."
-            StatusLabel.TextColor3 = Color3.fromRGB(255, 200, 80)
-            
-            task.wait(0.3)
-            
-            local success = NextUI:ValidateKey(inputKey, keyUrl)
-            
-            if success then
-                StatusLabel.Text = "Key verified! Loading..."
-                StatusLabel.TextColor3 = Color3.fromRGB(80, 200, 120)
-                
-                task.wait(1)
-                KeyGui:Destroy()
-                
-                -- Execute success callback
-                onSuccess()
-            else
-                StatusLabel.Text = "Invalid key"
-                StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
-                KeyInput.Text = ""
-            end
-            
-            verifying = false
+        local inputKey = KeyInput.Text
+        if inputKey == "" then
+            StatusLabel.Text = "Please enter a key"
+            StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+            return
         end
+        
+        verifying = true
+        VerifyButton.Text = "Verifying..."
+        StatusLabel.Text = "Verifying key..."
+        StatusLabel.TextColor3 = Color3.fromRGB(255, 200, 80)
+        
+        task.wait(0.5)
+        
+        local success = NextUI:ValidateKey(inputKey, keyUrl)
+        
+        if success then
+            StatusLabel.Text = "Key verified! Loading..."
+            StatusLabel.TextColor3 = Color3.fromRGB(80, 200, 120)
+            VerifyButton.Text = "Success!"
+            
+            task.wait(1)
+            KeyGui:Destroy()
+            
+            -- Execute success callback
+            onSuccess()
+        else
+            StatusLabel.Text = "Invalid key! Please try again"
+            StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+            VerifyButton.Text = "Verify"
+            KeyInput.Text = ""
+        end
+        
+        verifying = false
     end)
 end
 
