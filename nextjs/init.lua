@@ -429,6 +429,7 @@ function NextUI:Window(config)
     config = config or {}
     local windowTitle = config.Title or "NextUI Window"
     local windowIcon = config.Icon or nil
+    local windowVersion = config.Version or nil
     local windowSize = config.Size or UDim2.new(0, 600, 0, 450)
 
     -- Main Container
@@ -513,13 +514,29 @@ function NextUI:Window(config)
     TitleLabel.Name = "Title"
     TitleLabel.Parent = Header
     TitleLabel.Position = UDim2.new(0, titleStartX, 0, 0)
-    TitleLabel.Size = UDim2.new(0.7, 0, 1, 0)
+    TitleLabel.Size = UDim2.new(0.6, 0, 1, 0)
     TitleLabel.BackgroundTransparency = 1
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.Text = windowTitle
     TitleLabel.TextColor3 = Theme.Text
     TitleLabel.TextSize = 16
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    -- Version Label (optional, on the right side)
+    if windowVersion then
+        local VersionLabel = Instance.new("TextLabel")
+        VersionLabel.Name = "Version"
+        VersionLabel.Parent = Header
+        VersionLabel.AnchorPoint = Vector2.new(1, 0.5)
+        VersionLabel.Position = UDim2.new(1, -95, 0.5, 0)
+        VersionLabel.Size = UDim2.new(0, 60, 0, 20)
+        VersionLabel.BackgroundTransparency = 1
+        VersionLabel.Font = Enum.Font.Gotham
+        VersionLabel.Text = windowVersion
+        VersionLabel.TextColor3 = Theme.TextSecondary
+        VersionLabel.TextSize = 10
+        VersionLabel.TextXAlignment = Enum.TextXAlignment.Right
+    end
 
     -- Close Button
     local CloseButton = Instance.new("TextButton")
