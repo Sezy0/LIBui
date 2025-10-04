@@ -119,8 +119,11 @@ function NextUI:ValidateKey(inputKey, keyUrl)
     end)
 
     if success then
-        validKey = validKey:gsub("%s+", "") -- Remove whitespace
-        if inputKey == validKey then
+        -- Normalize both keys: lowercase and remove all whitespace
+        validKey = validKey:gsub("%s+", ""):lower()
+        local normalizedInput = inputKey:gsub("%s+", ""):lower()
+        
+        if normalizedInput == validKey then
             authenticated = true
             authKey = inputKey
             return true
