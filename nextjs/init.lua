@@ -441,7 +441,7 @@ function NextUI:Window(config)
     MainFrame.Size = windowSize
     MainFrame.BackgroundColor3 = Theme.Background
     MainFrame.BorderSizePixel = 0
-    MainFrame.ClipsDescendants = true
+    MainFrame.ClipsDescendants = false  -- Allow HomeBar to show outside
 
     -- Neumorphic shadow (outer)
     local OuterShadow = Instance.new("ImageLabel")
@@ -1117,15 +1117,17 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + 15)
     end)
 
-    -- iPhone-style Home Bar (Below MainFrame)
+    -- iPhone-style Home Bar (CHILD of MainFrame for auto drag sync)
+    -- Using Scale positioning to always appear below MainFrame
     local HomeBarContainer = Instance.new("Frame")
     HomeBarContainer.Name = "HomeBarContainer"
-    HomeBarContainer.Parent = ScreenGui
-    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0.5)
-    HomeBarContainer.Position = UDim2.new(0.5, 0, 0.5, (windowSize.Y.Offset / 2) + 15)
-    HomeBarContainer.Size = UDim2.new(0, windowSize.X.Offset, 0, 25)
+    HomeBarContainer.Parent = MainFrame  -- PARENTED TO MAINFRAME NOW!
+    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0)
+    HomeBarContainer.Position = UDim2.new(0.5, 0, 1, 15)  -- Just below MainFrame bottom
+    HomeBarContainer.Size = UDim2.new(1, 0, 0, 25)
     HomeBarContainer.BackgroundTransparency = 1
     HomeBarContainer.BorderSizePixel = 0
+    HomeBarContainer.ZIndex = 100  -- High ZIndex to appear above everything
 
     -- Home Bar Indicator
     local HomeBarIndicator = Instance.new("Frame")
@@ -1136,32 +1138,15 @@ function NextUI:Window(config)
     HomeBarIndicator.Size = UDim2.new(0, 80, 0, 4)
     HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
     HomeBarIndicator.BorderSizePixel = 0
+    HomeBarIndicator.ZIndex = 101
 
     local HomeBarCorner = Instance.new("UICorner")
     HomeBarCorner.CornerRadius = UDim.new(1, 0)
     HomeBarCorner.Parent = HomeBarIndicator
 
-    -- Make draggable from header and home bar
+    -- Make draggable from header AND home bar (both drag MainFrame)
     MakeDraggable(MainFrame, Header)
     MakeDraggable(MainFrame, HomeBarContainer)
-
-    -- Keep HomeBar position synced with MainFrame (stick to bottom)
-    MainFrame:GetPropertyChangedSignal("Position"):Connect(function()
-        HomeBarContainer.Position = UDim2.new(
-            MainFrame.Position.X.Scale,
-            MainFrame.Position.X.Offset + (windowSize.X.Offset / 2),
-            MainFrame.Position.Y.Scale,
-            MainFrame.Position.Y.Offset + windowSize.Y.Offset + 15
-        )
-    end)
-
-    -- Initialize home bar position
-    HomeBarContainer.Position = UDim2.new(
-        0.5,
-        0,
-        0.5,
-        (windowSize.Y.Offset / 2) + 15
-    )
 
     -- Now set up minimize button handler (after Sidebar and ContentFrame exist)
     MinimizeButton.MouseButton1Click:Connect(function()
@@ -1172,6 +1157,8 @@ function NextUI:Window(config)
             HeaderCover.Visible = false
             Sidebar.Visible = false  -- Hide sidebar and profile
             ContentFrame.Visible = false  -- Hide content
+            -- Keep HomeBar visible even when minimized
+            HomeBarContainer.Visible = true
             -- Make header background same as mainframe so it looks unified
             task.wait(0.3)
             Header.BackgroundColor3 = Theme.Background
@@ -1181,6 +1168,7 @@ function NextUI:Window(config)
             HeaderCover.Visible = true
             Sidebar.Visible = true  -- Show sidebar and profile
             ContentFrame.Visible = true  -- Show content
+            HomeBarContainer.Visible = true  -- Ensure home bar stays visible
             Header.BackgroundColor3 = Theme.Surface
         end
     end)
