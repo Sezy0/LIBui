@@ -606,13 +606,61 @@ function NextUI:Window(config)
         end
     end)
 
+    -- Version Section
+    local VersionSection = Instance.new("Frame")
+    VersionSection.Parent = SettingsContent
+    VersionSection.Size = UDim2.new(1, 0, 0, 45)
+    VersionSection.BackgroundColor3 = Theme.Background
+    VersionSection.BorderSizePixel = 0
+    VersionSection.LayoutOrder = 2
+    VersionSection.ZIndex = 51
+
+    local VersionCorner = Instance.new("UICorner")
+    VersionCorner.CornerRadius = UDim.new(0, 10)
+    VersionCorner.Parent = VersionSection
+
+    local VersionTitle = Instance.new("TextLabel")
+    VersionTitle.Parent = VersionSection
+    VersionTitle.Position = UDim2.new(0, 12, 0, 10)
+    VersionTitle.Size = UDim2.new(0.5, -12, 0, 16)
+    VersionTitle.BackgroundTransparency = 1
+    VersionTitle.Font = Enum.Font.GothamBold
+    VersionTitle.Text = "📦 Version"
+    VersionTitle.TextColor3 = Theme.Text
+    VersionTitle.TextSize = 13
+    VersionTitle.TextXAlignment = Enum.TextXAlignment.Left
+    VersionTitle.ZIndex = 51
+
+    local VersionLabel = Instance.new("TextLabel")
+    VersionLabel.Parent = VersionSection
+    VersionLabel.AnchorPoint = Vector2.new(1, 0.5)
+    VersionLabel.Position = UDim2.new(1, -12, 0.5, 0)
+    VersionLabel.Size = UDim2.new(0, 80, 0, 24)
+    VersionLabel.BackgroundColor3 = Theme.Surface
+    VersionLabel.BorderSizePixel = 0
+    VersionLabel.Font = Enum.Font.GothamBold
+    VersionLabel.Text = "v1.0.16"
+    VersionLabel.TextColor3 = Theme.Accent
+    VersionLabel.TextSize = 12
+    VersionLabel.ZIndex = 51
+
+    local VersionLabelCorner = Instance.new("UICorner")
+    VersionLabelCorner.CornerRadius = UDim.new(0, 6)
+    VersionLabelCorner.Parent = VersionLabel
+
+    local VersionLabelStroke = Instance.new("UIStroke")
+    VersionLabelStroke.Parent = VersionLabel
+    VersionLabelStroke.Color = Theme.Border
+    VersionLabelStroke.Thickness = 1
+    VersionLabelStroke.Transparency = 0.5
+
     -- About Section
     local AboutSection = Instance.new("Frame")
     AboutSection.Parent = SettingsContent
     AboutSection.Size = UDim2.new(1, 0, 0, 115)
     AboutSection.BackgroundColor3 = Theme.Background
     AboutSection.BorderSizePixel = 0
-    AboutSection.LayoutOrder = 2
+    AboutSection.LayoutOrder = 3
     AboutSection.ZIndex = 51
 
     local AboutCorner = Instance.new("UICorner")
