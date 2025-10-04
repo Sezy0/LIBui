@@ -522,20 +522,28 @@ function NextUI:Window(config)
     TitleLabel.TextSize = 16
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Version Label (optional, on the right side)
+    -- Version Label (optional, next to title)
     if windowVersion then
+        -- Calculate title width to position version right after it
+        local TextService = game:GetService("TextService")
+        local titleWidth = TextService:GetTextSize(
+            windowTitle,
+            16,
+            Enum.Font.GothamBold,
+            Vector2.new(1000, 50)
+        ).X
+
         local VersionLabel = Instance.new("TextLabel")
         VersionLabel.Name = "Version"
         VersionLabel.Parent = Header
-        VersionLabel.AnchorPoint = Vector2.new(1, 0.5)
-        VersionLabel.Position = UDim2.new(1, -95, 0.5, 0)
-        VersionLabel.Size = UDim2.new(0, 60, 0, 20)
+        VersionLabel.Position = UDim2.new(0, titleStartX + titleWidth + 10, 0, 0)
+        VersionLabel.Size = UDim2.new(0, 60, 1, 0)
         VersionLabel.BackgroundTransparency = 1
         VersionLabel.Font = Enum.Font.Gotham
         VersionLabel.Text = windowVersion
-        VersionLabel.TextColor3 = Theme.TextSecondary
-        VersionLabel.TextSize = 10
-        VersionLabel.TextXAlignment = Enum.TextXAlignment.Right
+        VersionLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+        VersionLabel.TextSize = 11
+        VersionLabel.TextXAlignment = Enum.TextXAlignment.Left
     end
 
     -- Close Button
