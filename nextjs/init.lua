@@ -1122,24 +1122,12 @@ function NextUI:Notification(title, message, duration)
     NotifCorner.CornerRadius = UDim.new(0, 10)
     NotifCorner.Parent = NotifFrame
 
-    -- Subtle dark border instead of white
+    -- Subtle dark border
     local NotifStroke = Instance.new("UIStroke")
     NotifStroke.Parent = NotifFrame
-    NotifStroke.Color = Theme.Border  -- Dark gray border, no white
+    NotifStroke.Color = Theme.Border
     NotifStroke.Thickness = 1
     NotifStroke.Transparency = 0.5
-
-    -- Accent line on the left
-    local AccentLine = Instance.new("Frame")
-    AccentLine.Parent = NotifFrame
-    AccentLine.Position = UDim2.new(0, 0, 0, 0)
-    AccentLine.Size = UDim2.new(0, 3, 1, 0)
-    AccentLine.BackgroundColor3 = Theme.Accent
-    AccentLine.BorderSizePixel = 0
-
-    local AccentCorner = Instance.new("UICorner")
-    AccentCorner.CornerRadius = UDim.new(0, 10)
-    AccentCorner.Parent = AccentLine
 
     local NotifTitle = Instance.new("TextLabel")
     NotifTitle.Parent = NotifFrame
