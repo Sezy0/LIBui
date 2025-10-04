@@ -409,7 +409,7 @@ function NextUI:Window(config)
     SettingsBox.Parent = SettingsPanel
     SettingsBox.AnchorPoint = Vector2.new(0.5, 0.5)
     SettingsBox.Position = UDim2.new(0.5, 0, 0.5, 0)
-    SettingsBox.Size = UDim2.new(0, 400, 0, 320)
+    SettingsBox.Size = UDim2.new(0, 380, 0, 280)
     SettingsBox.BackgroundColor3 = Theme.Surface
     SettingsBox.BorderSizePixel = 0
     SettingsBox.ZIndex = 51
@@ -481,21 +481,34 @@ function NextUI:Window(config)
         Tween(CloseSettings, {BackgroundColor3 = Theme.SurfaceHover})
     end)
 
-    -- Settings Content
-    local SettingsContent = Instance.new("Frame")
+    -- Settings Content (scrollable)
+    local SettingsContent = Instance.new("ScrollingFrame")
     SettingsContent.Parent = SettingsBox
     SettingsContent.Position = UDim2.new(0, 0, 0, 50)
     SettingsContent.Size = UDim2.new(1, 0, 1, -50)
     SettingsContent.BackgroundTransparency = 1
+    SettingsContent.BorderSizePixel = 0
+    SettingsContent.ScrollBarThickness = 4
+    SettingsContent.ScrollBarImageColor3 = Theme.Border
+    SettingsContent.CanvasSize = UDim2.new(0, 0, 0, 0)
     SettingsContent.ZIndex = 51
+
+    local SettingsLayout = Instance.new("UIListLayout")
+    SettingsLayout.Parent = SettingsContent
+    SettingsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    SettingsLayout.Padding = UDim.new(0, 10)
+
+    SettingsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        SettingsContent.CanvasSize = UDim2.new(0, 0, 0, SettingsLayout.AbsoluteContentSize.Y + 20)
+    end)
 
     -- Keybind Section
     local KeybindSection = Instance.new("Frame")
     KeybindSection.Parent = SettingsContent
-    KeybindSection.Position = UDim2.new(0, 20, 0, 20)
-    KeybindSection.Size = UDim2.new(1, -40, 0, 110)
+    KeybindSection.Size = UDim2.new(1, -20, 0, 85)
     KeybindSection.BackgroundColor3 = Theme.Background
     KeybindSection.BorderSizePixel = 0
+    KeybindSection.LayoutOrder = 1
     KeybindSection.ZIndex = 51
 
     local KeybindCorner = Instance.new("UICorner")
@@ -504,25 +517,25 @@ function NextUI:Window(config)
 
     local KeybindTitle = Instance.new("TextLabel")
     KeybindTitle.Parent = KeybindSection
-    KeybindTitle.Position = UDim2.new(0, 15, 0, 15)
-    KeybindTitle.Size = UDim2.new(1, -30, 0, 20)
+    KeybindTitle.Position = UDim2.new(0, 12, 0, 10)
+    KeybindTitle.Size = UDim2.new(1, -24, 0, 18)
     KeybindTitle.BackgroundTransparency = 1
     KeybindTitle.Font = Enum.Font.GothamBold
     KeybindTitle.Text = "⌨ Toggle UI Keybind"
     KeybindTitle.TextColor3 = Theme.Text
-    KeybindTitle.TextSize = 14
+    KeybindTitle.TextSize = 13
     KeybindTitle.TextXAlignment = Enum.TextXAlignment.Left
     KeybindTitle.ZIndex = 51
 
     local KeybindDesc = Instance.new("TextLabel")
     KeybindDesc.Parent = KeybindSection
-    KeybindDesc.Position = UDim2.new(0, 15, 0, 40)
-    KeybindDesc.Size = UDim2.new(1, -30, 0, 15)
+    KeybindDesc.Position = UDim2.new(0, 12, 0, 30)
+    KeybindDesc.Size = UDim2.new(1, -24, 0, 14)
     KeybindDesc.BackgroundTransparency = 1
     KeybindDesc.Font = Enum.Font.Gotham
-    KeybindDesc.Text = "Press any key to change (single character only)"
+    KeybindDesc.Text = "Click to change key (1 character)"
     KeybindDesc.TextColor3 = Theme.TextSecondary
-    KeybindDesc.TextSize = 11
+    KeybindDesc.TextSize = 10
     KeybindDesc.TextXAlignment = Enum.TextXAlignment.Left
     KeybindDesc.ZIndex = 51
 
@@ -530,14 +543,14 @@ function NextUI:Window(config)
     local toggleKey = Enum.KeyCode.G  -- Default key
     local KeybindButton = Instance.new("TextButton")
     KeybindButton.Parent = KeybindSection
-    KeybindButton.Position = UDim2.new(0, 15, 0, 65)
-    KeybindButton.Size = UDim2.new(0, 80, 0, 32)
+    KeybindButton.Position = UDim2.new(0, 12, 0, 50)
+    KeybindButton.Size = UDim2.new(0, 70, 0, 28)
     KeybindButton.BackgroundColor3 = Theme.Surface
     KeybindButton.BorderSizePixel = 0
     KeybindButton.Font = Enum.Font.GothamBold
     KeybindButton.Text = "G"
     KeybindButton.TextColor3 = Theme.Accent
-    KeybindButton.TextSize = 16
+    KeybindButton.TextSize = 14
     KeybindButton.ZIndex = 51
 
     local KeybindButtonCorner = Instance.new("UICorner")
@@ -585,13 +598,13 @@ function NextUI:Window(config)
         end
     end)
 
-    -- About Section (moved down)
+    -- About Section
     local AboutSection = Instance.new("Frame")
     AboutSection.Parent = SettingsContent
-    AboutSection.Position = UDim2.new(0, 20, 0, 145)
-    AboutSection.Size = UDim2.new(1, -40, 0, 135)
+    AboutSection.Size = UDim2.new(1, -20, 0, 110)
     AboutSection.BackgroundColor3 = Theme.Background
     AboutSection.BorderSizePixel = 0
+    AboutSection.LayoutOrder = 2
     AboutSection.ZIndex = 51
 
     local AboutCorner = Instance.new("UICorner")
@@ -600,25 +613,25 @@ function NextUI:Window(config)
 
     local AboutTitle = Instance.new("TextLabel")
     AboutTitle.Parent = AboutSection
-    AboutTitle.Position = UDim2.new(0, 15, 0, 12)
-    AboutTitle.Size = UDim2.new(1, -30, 0, 20)
+    AboutTitle.Position = UDim2.new(0, 12, 0, 10)
+    AboutTitle.Size = UDim2.new(1, -24, 0, 18)
     AboutTitle.BackgroundTransparency = 1
     AboutTitle.Font = Enum.Font.GothamBold
     AboutTitle.Text = "About NextUI"
     AboutTitle.TextColor3 = Theme.Text
-    AboutTitle.TextSize = 14
+    AboutTitle.TextSize = 13
     AboutTitle.TextXAlignment = Enum.TextXAlignment.Left
     AboutTitle.ZIndex = 51
 
     local AboutInfo = Instance.new("TextLabel")
     AboutInfo.Parent = AboutSection
-    AboutInfo.Position = UDim2.new(0, 15, 0, 38)
-    AboutInfo.Size = UDim2.new(1, -30, 0, 90)
+    AboutInfo.Position = UDim2.new(0, 12, 0, 32)
+    AboutInfo.Size = UDim2.new(1, -24, 0, 70)
     AboutInfo.BackgroundTransparency = 1
     AboutInfo.Font = Enum.Font.Gotham
-    AboutInfo.Text = "NextUI Library\nDark Neumorphism Theme\n\n✨ Created by FoxZy\n\nA modern, sleek UI library for Roblox\nwith smooth animations and clean design."
+    AboutInfo.Text = "NextUI Library - Dark Neumorphism\n\n✨ Created by FoxZy\n\nA modern, sleek UI library for Roblox\nwith smooth animations and clean design."
     AboutInfo.TextColor3 = Theme.TextSecondary
-    AboutInfo.TextSize = 11
+    AboutInfo.TextSize = 10
     AboutInfo.TextXAlignment = Enum.TextXAlignment.Left
     AboutInfo.TextYAlignment = Enum.TextYAlignment.Top
     AboutInfo.TextWrapped = true
@@ -629,7 +642,7 @@ function NextUI:Window(config)
         SettingsPanel.Visible = not SettingsPanel.Visible
         if SettingsPanel.Visible then
             SettingsBox.Size = UDim2.new(0, 0, 0, 0)
-            Tween(SettingsBox, {Size = UDim2.new(0, 400, 0, 320)}, 0.3)
+            Tween(SettingsBox, {Size = UDim2.new(0, 380, 0, 280)}, 0.3)
         end
     end
 
