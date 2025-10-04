@@ -617,7 +617,7 @@ function NextUI:Window(config)
             Arrow.TextColor3 = Theme.TextSecondary
             Arrow.TextSize = 10
 
-            local OptionsFrame = Instance.new("Frame")
+            local OptionsFrame = Instance.new("ScrollingFrame")
             OptionsFrame.Name = "Options"
             OptionsFrame.Parent = DropdownFrame
             OptionsFrame.Position = UDim2.new(0, 0, 1, 5)
@@ -626,6 +626,10 @@ function NextUI:Window(config)
             OptionsFrame.BorderSizePixel = 0
             OptionsFrame.Visible = false
             OptionsFrame.ZIndex = 11
+            OptionsFrame.ScrollBarThickness = 4
+            OptionsFrame.ScrollBarImageColor3 = Theme.Border
+            OptionsFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+            OptionsFrame.ClipsDescendants = true
 
             local OptionsCorner = Instance.new("UICorner")
             OptionsCorner.CornerRadius = UDim.new(0, 8)
@@ -641,6 +645,11 @@ function NextUI:Window(config)
             OptionsList.Parent = OptionsFrame
             OptionsList.SortOrder = Enum.SortOrder.LayoutOrder
             OptionsList.Padding = UDim.new(0, 2)
+            
+            -- Auto-resize canvas for scrolling
+            OptionsList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                OptionsFrame.CanvasSize = UDim2.new(0, 0, 0, OptionsList.AbsoluteContentSize.Y + 4)
+            end)
 
             for _, option in ipairs(options) do
                 local OptionButton = Instance.new("TextButton")
