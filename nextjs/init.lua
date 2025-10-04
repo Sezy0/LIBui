@@ -241,8 +241,10 @@ function NextUI:Window(config)
         minimized = not minimized
         if minimized then
             Tween(MainFrame, {Size = UDim2.new(windowSize.X.Scale, windowSize.X.Offset, 0, 50)}, 0.3)
+            HeaderCover.Visible = false  -- Hide cover to show rounded corners
         else
             Tween(MainFrame, {Size = windowSize}, 0.3)
+            HeaderCover.Visible = true   -- Show cover again
         end
     end)
 
