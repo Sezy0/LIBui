@@ -240,11 +240,17 @@ function NextUI:Window(config)
     MinimizeButton.MouseButton1Click:Connect(function()
         minimized = not minimized
         if minimized then
+            -- When minimized, show full rounded corners
             Tween(MainFrame, {Size = UDim2.new(windowSize.X.Scale, windowSize.X.Offset, 0, 50)}, 0.3)
-            HeaderCover.Visible = false  -- Hide cover to show rounded corners
+            HeaderCover.Visible = false
+            -- Make header background same as mainframe so it looks unified
+            task.wait(0.3)
+            Header.BackgroundColor3 = Theme.Background
         else
+            -- When expanded, hide bottom corners
             Tween(MainFrame, {Size = windowSize}, 0.3)
-            HeaderCover.Visible = true   -- Show cover again
+            HeaderCover.Visible = true
+            Header.BackgroundColor3 = Theme.Surface
         end
     end)
 
