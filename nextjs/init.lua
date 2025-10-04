@@ -512,7 +512,7 @@ function NextUI:Window(config)
     -- Keybind Section
     local KeybindSection = Instance.new("Frame")
     KeybindSection.Parent = SettingsContent
-    KeybindSection.Size = UDim2.new(1, 0, 0, 90)
+    KeybindSection.Size = UDim2.new(1, 0, 0, 60)
     KeybindSection.BackgroundColor3 = Theme.Background
     KeybindSection.BorderSizePixel = 0
     KeybindSection.LayoutOrder = 1
@@ -524,8 +524,8 @@ function NextUI:Window(config)
 
     local KeybindTitle = Instance.new("TextLabel")
     KeybindTitle.Parent = KeybindSection
-    KeybindTitle.Position = UDim2.new(0, 12, 0, 10)
-    KeybindTitle.Size = UDim2.new(1, -24, 0, 18)
+    KeybindTitle.Position = UDim2.new(0, 12, 0, 12)
+    KeybindTitle.Size = UDim2.new(0.6, -12, 0, 16)
     KeybindTitle.BackgroundTransparency = 1
     KeybindTitle.Font = Enum.Font.GothamBold
     KeybindTitle.Text = "⌨ Toggle UI Keybind"
@@ -536,13 +536,13 @@ function NextUI:Window(config)
 
     local KeybindDesc = Instance.new("TextLabel")
     KeybindDesc.Parent = KeybindSection
-    KeybindDesc.Position = UDim2.new(0, 12, 0, 30)
-    KeybindDesc.Size = UDim2.new(1, -24, 0, 14)
+    KeybindDesc.Position = UDim2.new(0, 12, 0, 32)
+    KeybindDesc.Size = UDim2.new(0.6, -12, 0, 14)
     KeybindDesc.BackgroundTransparency = 1
     KeybindDesc.Font = Enum.Font.Gotham
-    KeybindDesc.Text = "Click to change key (1 character)"
+    KeybindDesc.Text = "Click button to change"
     KeybindDesc.TextColor3 = Theme.TextSecondary
-    KeybindDesc.TextSize = 10
+    KeybindDesc.TextSize = 9
     KeybindDesc.TextXAlignment = Enum.TextXAlignment.Left
     KeybindDesc.ZIndex = 51
 
@@ -550,14 +550,15 @@ function NextUI:Window(config)
     local toggleKey = Enum.KeyCode.G  -- Default key
     local KeybindButton = Instance.new("TextButton")
     KeybindButton.Parent = KeybindSection
-    KeybindButton.Position = UDim2.new(0, 12, 0, 50)
-    KeybindButton.Size = UDim2.new(0, 70, 0, 28)
+    KeybindButton.AnchorPoint = Vector2.new(1, 0.5)
+    KeybindButton.Position = UDim2.new(1, -12, 0.5, 0)
+    KeybindButton.Size = UDim2.new(0, 60, 0, 36)
     KeybindButton.BackgroundColor3 = Theme.Surface
     KeybindButton.BorderSizePixel = 0
     KeybindButton.Font = Enum.Font.GothamBold
     KeybindButton.Text = "G"
     KeybindButton.TextColor3 = Theme.Accent
-    KeybindButton.TextSize = 14
+    KeybindButton.TextSize = 16
     KeybindButton.ZIndex = 51
 
     local KeybindButtonCorner = Instance.new("UICorner")
