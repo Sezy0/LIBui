@@ -1100,7 +1100,7 @@ function NextUI:Window(config)
     ContentFrame.Name = "ContentFrame"
     ContentFrame.Parent = MainFrame
     ContentFrame.Position = UDim2.new(0, 165, 0, 65)
-    ContentFrame.Size = UDim2.new(1, -180, 1, -95)  -- Extra space for home bar
+    ContentFrame.Size = UDim2.new(1, -180, 1, -90)  -- Extra space for home bar
     ContentFrame.BackgroundTransparency = 1
     ContentFrame.BorderSizePixel = 0
     ContentFrame.ScrollBarThickness = 4
@@ -1121,10 +1121,11 @@ function NextUI:Window(config)
     local HomeBar = Instance.new("Frame")
     HomeBar.Name = "HomeBar"
     HomeBar.Parent = MainFrame
-    HomeBar.Position = UDim2.new(0, 0, 1, -25)
-    HomeBar.Size = UDim2.new(1, 0, 0, 25)
-    HomeBar.BackgroundTransparency = 1
+    HomeBar.Position = UDim2.new(0, 0, 1, -20)
+    HomeBar.Size = UDim2.new(1, 0, 0, 20)
+    HomeBar.BackgroundColor3 = Theme.Background
     HomeBar.BorderSizePixel = 0
+    HomeBar.ZIndex = 10
 
     -- Home Bar Indicator
     local HomeBarIndicator = Instance.new("Frame")
@@ -1132,9 +1133,10 @@ function NextUI:Window(config)
     HomeBarIndicator.Parent = HomeBar
     HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
     HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
-    HomeBarIndicator.Size = UDim2.new(0, 80, 0, 4)
-    HomeBarIndicator.BackgroundColor3 = Theme.TextTertiary
+    HomeBarIndicator.Size = UDim2.new(0, 60, 0, 3)
+    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
     HomeBarIndicator.BorderSizePixel = 0
+    HomeBarIndicator.ZIndex = 11
 
     local HomeBarCorner = Instance.new("UICorner")
     HomeBarCorner.CornerRadius = UDim.new(1, 0)
