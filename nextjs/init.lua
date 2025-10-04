@@ -1111,52 +1111,76 @@ function NextUI:Notification(title, message, duration)
     local NotifFrame = Instance.new("Frame")
     NotifFrame.Parent = ScreenGui
     NotifFrame.AnchorPoint = Vector2.new(1, 0)
-    NotifFrame.Position = UDim2.new(1, -20, 0, 20)
-    NotifFrame.Size = UDim2.new(0, 0, 0, 0)
-    NotifFrame.BackgroundColor3 = Theme.Surface
+    NotifFrame.Position = UDim2.new(1, 320, 0, 20)  -- Start off-screen to the right
+    NotifFrame.Size = UDim2.new(0, 280, 0, 65)  -- Compact size
+    NotifFrame.BackgroundColor3 = Theme.Background  -- Pure black background
     NotifFrame.BorderSizePixel = 0
     NotifFrame.ZIndex = 100
+    NotifFrame.BackgroundTransparency = 0.1  -- Slightly transparent
 
     local NotifCorner = Instance.new("UICorner")
     NotifCorner.CornerRadius = UDim.new(0, 10)
     NotifCorner.Parent = NotifFrame
 
+    -- Subtle dark border instead of white
     local NotifStroke = Instance.new("UIStroke")
     NotifStroke.Parent = NotifFrame
-    NotifStroke.Color = Theme.Accent
+    NotifStroke.Color = Theme.Border  -- Dark gray border, no white
     NotifStroke.Thickness = 1
+    NotifStroke.Transparency = 0.5
+
+    -- Accent line on the left
+    local AccentLine = Instance.new("Frame")
+    AccentLine.Parent = NotifFrame
+    AccentLine.Position = UDim2.new(0, 0, 0, 0)
+    AccentLine.Size = UDim2.new(0, 3, 1, 0)
+    AccentLine.BackgroundColor3 = Theme.Accent
+    AccentLine.BorderSizePixel = 0
+
+    local AccentCorner = Instance.new("UICorner")
+    AccentCorner.CornerRadius = UDim.new(0, 10)
+    AccentCorner.Parent = AccentLine
 
     local NotifTitle = Instance.new("TextLabel")
     NotifTitle.Parent = NotifFrame
-    NotifTitle.Position = UDim2.new(0, 15, 0, 10)
-    NotifTitle.Size = UDim2.new(1, -30, 0, 18)
+    NotifTitle.Position = UDim2.new(0, 15, 0, 8)
+    NotifTitle.Size = UDim2.new(1, -30, 0, 16)
     NotifTitle.BackgroundTransparency = 1
     NotifTitle.Font = Enum.Font.GothamBold
     NotifTitle.Text = title
     NotifTitle.TextColor3 = Theme.Text
-    NotifTitle.TextSize = 14
+    NotifTitle.TextSize = 13
     NotifTitle.TextXAlignment = Enum.TextXAlignment.Left
 
     local NotifMessage = Instance.new("TextLabel")
     NotifMessage.Parent = NotifFrame
-    NotifMessage.Position = UDim2.new(0, 15, 0, 30)
-    NotifMessage.Size = UDim2.new(1, -30, 0, 30)
+    NotifMessage.Position = UDim2.new(0, 15, 0, 26)
+    NotifMessage.Size = UDim2.new(1, -30, 0, 32)
     NotifMessage.BackgroundTransparency = 1
     NotifMessage.Font = Enum.Font.Gotham
     NotifMessage.Text = message
     NotifMessage.TextColor3 = Theme.TextSecondary
-    NotifMessage.TextSize = 12
+    NotifMessage.TextSize = 11
     NotifMessage.TextWrapped = true
     NotifMessage.TextXAlignment = Enum.TextXAlignment.Left
     NotifMessage.TextYAlignment = Enum.TextYAlignment.Top
 
-    -- Animate in
-    Tween(NotifFrame, {Size = UDim2.new(0, 300, 0, 70)}, 0.3)
+    -- Smooth slide in animation from right
+    TweenService:Create(
+        NotifFrame,
+        TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+        {Position = UDim2.new(1, -20, 0, 20)}
+    ):Play()
 
-    -- Auto dismiss
-    wait(duration)
-    Tween(NotifFrame, {Size = UDim2.new(0, 0, 0, 0)}, 0.3)
-    wait(0.3)
+    -- Auto dismiss with slide out
+    task.wait(duration)
+    local fadeOut = TweenService:Create(
+        NotifFrame,
+        TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+        {Position = UDim2.new(1, 320, 0, 20), BackgroundTransparency = 1}
+    )
+    fadeOut:Play()
+    fadeOut.Completed:Wait()
     NotifFrame:Destroy()
 end
 
