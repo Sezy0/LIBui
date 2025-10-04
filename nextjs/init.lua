@@ -258,22 +258,7 @@ function NextUI:Window(config)
         Tween(MinimizeButton, {BackgroundColor3 = Theme.SurfaceHover})
     end)
 
-    MinimizeButton.MouseButton1Click:Connect(function()
-        minimized = not minimized
-        if minimized then
-            -- When minimized, show full rounded corners
-            Tween(MainFrame, {Size = UDim2.new(windowSize.X.Scale, windowSize.X.Offset, 0, 50)}, 0.3)
-            HeaderCover.Visible = false
-            -- Make header background same as mainframe so it looks unified
-            task.wait(0.3)
-            Header.BackgroundColor3 = Theme.Background
-        else
-            -- When expanded, hide bottom corners
-            Tween(MainFrame, {Size = windowSize}, 0.3)
-            HeaderCover.Visible = true
-            Header.BackgroundColor3 = Theme.Surface
-        end
-    end)
+    -- Minimize click handler will be set after Sidebar and ContentFrame are created
 
     -- Sidebar (left)
     local Sidebar = Instance.new("Frame")
@@ -456,6 +441,28 @@ function NextUI:Window(config)
 
     -- Make draggable
     MakeDraggable(MainFrame, Header)
+
+    -- Now set up minimize button handler (after Sidebar and ContentFrame exist)
+    MinimizeButton.MouseButton1Click:Connect(function()
+        minimized = not minimized
+        if minimized then
+            -- When minimized, show full rounded corners
+            Tween(MainFrame, {Size = UDim2.new(windowSize.X.Scale, windowSize.X.Offset, 0, 50)}, 0.3)
+            HeaderCover.Visible = false
+            Sidebar.Visible = false  -- Hide sidebar and profile
+            ContentFrame.Visible = false  -- Hide content
+            -- Make header background same as mainframe so it looks unified
+            task.wait(0.3)
+            Header.BackgroundColor3 = Theme.Background
+        else
+            -- When expanded, show everything again
+            Tween(MainFrame, {Size = windowSize}, 0.3)
+            HeaderCover.Visible = true
+            Sidebar.Visible = true  -- Show sidebar and profile
+            ContentFrame.Visible = true  -- Show content
+            Header.BackgroundColor3 = Theme.Surface
+        end
+    end)
 
     -- Tab management
     local tabs = {}
