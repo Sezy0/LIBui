@@ -540,13 +540,15 @@ function NextUI:Window(config)
 
             -- Slider Thumb (draggable circle)
             local SliderThumb = Instance.new("Frame")
-            SliderThumb.Parent = SliderTrack
+            SliderThumb.Parent = SliderFrame  -- Changed to SliderFrame for better visibility
             SliderThumb.AnchorPoint = Vector2.new(0.5, 0.5)
-            SliderThumb.Position = UDim2.new((currentValue - min) / (max - min), 0, 0.5, 0)
-            SliderThumb.Size = UDim2.new(0, 14, 0, 14)
+            -- Calculate position relative to SliderFrame
+            local thumbPos = 15 + ((currentValue - min) / (max - min)) * (SliderTrack.Size.X.Offset)
+            SliderThumb.Position = UDim2.new(0, thumbPos, 1, -16)  -- Positioned at track level
+            SliderThumb.Size = UDim2.new(0, 18, 0, 18)  -- Increased size
             SliderThumb.BackgroundColor3 = Theme.Accent
             SliderThumb.BorderSizePixel = 0
-            SliderThumb.ZIndex = 2
+            SliderThumb.ZIndex = 5  -- Higher ZIndex
 
             local ThumbCorner = Instance.new("UICorner")
             ThumbCorner.CornerRadius = UDim.new(1, 0)
@@ -556,7 +558,7 @@ function NextUI:Window(config)
             local ThumbStroke = Instance.new("UIStroke")
             ThumbStroke.Parent = SliderThumb
             ThumbStroke.Color = Theme.Background
-            ThumbStroke.Thickness = 2
+            ThumbStroke.Thickness = 3
 
             local dragging = false
 
@@ -566,19 +568,22 @@ function NextUI:Window(config)
                 
                 SliderValue.Text = tostring(currentValue)
                 Tween(SliderFill, {Size = UDim2.new(pos, 0, 1, 0)}, 0.1)
-                Tween(SliderThumb, {Position = UDim2.new(pos, 0, 0.5, 0)}, 0.1)
+                
+                -- Update thumb position relative to SliderFrame
+                local thumbPos = 15 + (pos * SliderTrack.Size.X.Offset)
+                Tween(SliderThumb, {Position = UDim2.new(0, thumbPos, 1, -16)}, 0.1)
                 
                 pcall(callback, currentValue)
             end
 
             -- Thumb hover effect
             SliderThumb.MouseEnter:Connect(function()
-                Tween(SliderThumb, {Size = UDim2.new(0, 16, 0, 16)}, 0.15)
+                Tween(SliderThumb, {Size = UDim2.new(0, 22, 0, 22)}, 0.15)
             end)
 
             SliderThumb.MouseLeave:Connect(function()
                 if not dragging then
-                    Tween(SliderThumb, {Size = UDim2.new(0, 14, 0, 14)}, 0.15)
+                    Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15)
                 end
             end)
 
@@ -592,7 +597,7 @@ function NextUI:Window(config)
             SliderTrack.InputEnded:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
                     dragging = false
-                    Tween(SliderThumb, {Size = UDim2.new(0, 14, 0, 14)}, 0.15)
+                    Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15)
                 end
             end)
 
