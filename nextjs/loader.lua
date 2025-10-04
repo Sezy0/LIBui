@@ -8,7 +8,7 @@ local NextUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sezy0/
 local Config = {
     UseKeySystem = true,  -- true or false
     KeyUrl = "https://pastebin.com/raw/v2BNczLY",  -- Raw URL to key
-    LogoId = "18858617508",  -- Your logo asset ID
+    LogoId = "133508780883906",  -- Your logo asset ID
     DiscordLink = "https://discord.gg/your-invite"  -- Discord invite link
 }
 -- ========================

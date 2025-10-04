@@ -142,7 +142,7 @@ function NextUI:Auth(config)
     config = config or {}
     local useKeySystem = config.UseKeySystem ~= false -- Default true
     local keyUrl = config.KeyUrl or ""
-    local logoId = config.LogoId or "18858617508"
+    local logoId = config.LogoId or "133508780883906"
     local discordLink = config.DiscordLink or "https://discord.gg/your-invite"
     local onSuccess = config.OnSuccess or function() end
 
