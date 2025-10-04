@@ -1117,13 +1117,13 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + 15)
     end)
 
-    -- iPhone-style Home Bar Container (Outside MainFrame)
+    -- iPhone-style Home Bar (Below MainFrame)
     local HomeBarContainer = Instance.new("Frame")
     HomeBarContainer.Name = "HomeBarContainer"
     HomeBarContainer.Parent = ScreenGui
-    HomeBarContainer.Position = UDim2.new(0.5, -300, 0.5, windowSize.Y.Offset / 2 + 10)
-    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0)
-    HomeBarContainer.Size = UDim2.new(0, windowSize.X.Offset, 0, 20)
+    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+    HomeBarContainer.Position = UDim2.new(0.5, 0, 0.5, (windowSize.Y.Offset / 2) + 15)
+    HomeBarContainer.Size = UDim2.new(0, windowSize.X.Offset, 0, 25)
     HomeBarContainer.BackgroundTransparency = 1
     HomeBarContainer.BorderSizePixel = 0
 
@@ -1134,7 +1134,7 @@ function NextUI:Window(config)
     HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
     HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
     HomeBarIndicator.Size = UDim2.new(0, 80, 0, 4)
-    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
     HomeBarIndicator.BorderSizePixel = 0
 
     local HomeBarCorner = Instance.new("UICorner")
@@ -1145,15 +1145,23 @@ function NextUI:Window(config)
     MakeDraggable(MainFrame, Header)
     MakeDraggable(MainFrame, HomeBarContainer)
 
-    -- Keep HomeBar position synced with MainFrame
+    -- Keep HomeBar position synced with MainFrame (stick to bottom)
     MainFrame:GetPropertyChangedSignal("Position"):Connect(function()
         HomeBarContainer.Position = UDim2.new(
             MainFrame.Position.X.Scale,
-            MainFrame.Position.X.Offset,
+            MainFrame.Position.X.Offset + (windowSize.X.Offset / 2),
             MainFrame.Position.Y.Scale,
-            MainFrame.Position.Y.Offset + windowSize.Y.Offset + 10
+            MainFrame.Position.Y.Offset + windowSize.Y.Offset + 15
         )
     end)
+
+    -- Initialize home bar position
+    HomeBarContainer.Position = UDim2.new(
+        0.5,
+        0,
+        0.5,
+        (windowSize.Y.Offset / 2) + 15
+    )
 
     -- Now set up minimize button handler (after Sidebar and ContentFrame exist)
     MinimizeButton.MouseButton1Click:Connect(function()
