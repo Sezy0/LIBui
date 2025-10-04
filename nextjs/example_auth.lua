@@ -4,8 +4,67 @@
 
 local NextUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sezy0/LIBui/main/nextjs/init.lua"))()
 
--- Configuration: Set your key URL here
-local KEY_URL = "https://pastebin.com/raw/v2BNczLY"  -- Change this to your own key URL
+-- ===== Configuration =====
+local USE_KEY_SYSTEM = true  -- Set to false to disable key authentication
+local KEY_URL = "https://pastebin.com/raw/v2BNczLY"  -- Your key URL (only used if USE_KEY_SYSTEM is true)
+-- ========================
+
+-- If key system is disabled, directly create UI
+if not USE_KEY_SYSTEM then
+    -- Bypass authentication
+    NextUI:ValidateKey("bypass", nil)
+    
+    -- Create Main UI directly
+    local Window = NextUI:Window({
+        Title = "NextUI Library",
+        Size = UDim2.new(0, 600, 0, 450)
+    })
+
+    local Tab1 = Window:Tab({
+        Name = "🏠 Home",
+        Icon = nil
+    })
+
+    local Section1 = Tab1:Section("Welcome")
+
+    Section1:Label("Welcome to NextUI!")
+    Section1:Label("✨ Created by FoxZy")
+    Section1:Label("Key System: Disabled")
+
+    Section1:Button({
+        Text = "Test Button",
+        Callback = function()
+            NextUI:Notification("Success", "Button clicked!", 2)
+        end
+    })
+
+    local Tab2 = Window:Tab({
+        Name = "⚙️ Settings",
+        Icon = nil
+    })
+
+    local Section2 = Tab2:Section("Configuration")
+
+    Section2:Toggle({
+        Text = "Example Toggle",
+        Default = false,
+        Callback = function(value)
+            print("Toggle:", value)
+        end
+    })
+
+    Section2:Slider({
+        Text = "Example Slider",
+        Min = 0,
+        Max = 100,
+        Default = 50,
+        Callback = function(value)
+            print("Slider:", value)
+        end
+    })
+
+    return -- Exit script
+end
 
 -- Create Key Input GUI
 local Players = game:GetService("Players")

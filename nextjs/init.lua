@@ -106,9 +106,11 @@ local authKey = ""
 
 -- Validate key
 function NextUI:ValidateKey(inputKey, keyUrl)
-    if not keyUrl then
-        warn("[NextUI] Key URL required for validation")
-        return false
+    -- Bypass mode (no key system)
+    if keyUrl == nil then
+        authenticated = true
+        authKey = "bypass"
+        return true
     end
 
     local success, validKey = pcall(function()
