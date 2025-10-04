@@ -538,17 +538,15 @@ function NextUI:Window(config)
             FillCorner.CornerRadius = UDim.new(1, 0)
             FillCorner.Parent = SliderFill
 
-            -- Slider Thumb (draggable circle)
+            -- Slider Thumb (draggable circle) - parent to SliderTrack for proper positioning
             local SliderThumb = Instance.new("Frame")
-            SliderThumb.Parent = SliderFrame  -- Changed to SliderFrame for better visibility
+            SliderThumb.Parent = SliderTrack
             SliderThumb.AnchorPoint = Vector2.new(0.5, 0.5)
-            -- Calculate position relative to SliderFrame
-            local thumbPos = 15 + ((currentValue - min) / (max - min)) * (SliderTrack.Size.X.Offset)
-            SliderThumb.Position = UDim2.new(0, thumbPos, 1, -16)  -- Positioned at track level
-            SliderThumb.Size = UDim2.new(0, 18, 0, 18)  -- Increased size
+            SliderThumb.Position = UDim2.new((currentValue - min) / (max - min), 0, 0.5, 0)
+            SliderThumb.Size = UDim2.new(0, 18, 0, 18)
             SliderThumb.BackgroundColor3 = Theme.Accent
             SliderThumb.BorderSizePixel = 0
-            SliderThumb.ZIndex = 5  -- Higher ZIndex
+            SliderThumb.ZIndex = 3
 
             local ThumbCorner = Instance.new("UICorner")
             ThumbCorner.CornerRadius = UDim.new(1, 0)
@@ -567,11 +565,8 @@ function NextUI:Window(config)
                 currentValue = math.floor(min + (max - min) * pos)
                 
                 SliderValue.Text = tostring(currentValue)
-                Tween(SliderFill, {Size = UDim2.new(pos, 0, 1, 0)}, 0.1)
-                
-                -- Update thumb position relative to SliderFrame
-                local thumbPos = 15 + (pos * SliderTrack.Size.X.Offset)
-                Tween(SliderThumb, {Position = UDim2.new(0, thumbPos, 1, -16)}, 0.1)
+                SliderFill.Size = UDim2.new(pos, 0, 1, 0)
+                SliderThumb.Position = UDim2.new(pos, 0, 0.5, 0)
                 
                 pcall(callback, currentValue)
             end
