@@ -5,9 +5,14 @@
 local NextUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sezy0/LIBui/main/nextjs/init.lua"))()
 
 -- ===== Configuration =====
+-- IMPORTANT: To use key system, HttpService must be enabled in game settings!
+-- Game Settings → Security → Allow HTTP Requests = ON
+-- 
+-- If HttpService is not enabled, set UseKeySystem = false
+
 local Config = {
-    UseKeySystem = true,  -- true or false
-    KeyUrl = "https://raw.githubusercontent.com/Sezy0/LIBui/main/key.txt",  -- Raw URL to key (GitHub works better than Pastebin)
+    UseKeySystem = true,  -- true or false (requires HttpService enabled!)
+    KeyUrl = "https://raw.githubusercontent.com/Sezy0/LIBui/main/key.txt",  -- Raw URL to key
     LogoId = "133508780883906",  -- Your logo asset ID
     DiscordLink = "https://discord.gg/your-invite"  -- Discord invite link
 }
