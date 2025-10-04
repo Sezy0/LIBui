@@ -559,6 +559,7 @@ function NextUI:Window(config)
             ThumbStroke.Thickness = 3
 
             local dragging = false
+            local connection
 
             local function updateSlider(input)
                 local pos = math.clamp((input.Position.X - SliderTrack.AbsolutePosition.X) / SliderTrack.AbsoluteSize.X, 0, 1)
@@ -571,34 +572,59 @@ function NextUI:Window(config)
                 pcall(callback, currentValue)
             end
 
-            -- Thumb hover effect
+            local function startDrag()
+                dragging = true
+                SliderThumb.Size = UDim2.new(0, 22, 0, 22)
+                
+                if connection then connection:Disconnect() end
+                connection = UserInputService.InputChanged:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseMovement then
+                        updateSlider(input)
+                    end
+                end)
+            end
+
+            local function endDrag()
+                dragging = false
+                SliderThumb.Size = UDim2.new(0, 18, 0, 18)
+                if connection then
+                    connection:Disconnect()
+                    connection = nil
+                end
+            end
+
+            -- Thumb hover effect (no tween, instant)
             SliderThumb.MouseEnter:Connect(function()
-                Tween(SliderThumb, {Size = UDim2.new(0, 22, 0, 22)}, 0.15)
+                if not dragging then
+                    SliderThumb.Size = UDim2.new(0, 20, 0, 20)
+                end
             end)
 
             SliderThumb.MouseLeave:Connect(function()
                 if not dragging then
-                    Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15)
+                    SliderThumb.Size = UDim2.new(0, 18, 0, 18)
                 end
             end)
 
+            -- Click/Drag on Track
             SliderTrack.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dragging = true
                     updateSlider(input)
+                    startDrag()
                 end
             end)
 
-            SliderTrack.InputEnded:Connect(function(input)
+            -- Click/Drag on Thumb
+            SliderThumb.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dragging = false
-                    Tween(SliderThumb, {Size = UDim2.new(0, 18, 0, 18)}, 0.15)
+                    startDrag()
                 end
             end)
 
-            UserInputService.InputChanged:Connect(function(input)
-                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-                    updateSlider(input)
+            -- Release anywhere
+            UserInputService.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    endDrag()
                 end
             end)
 
