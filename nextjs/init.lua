@@ -123,6 +123,10 @@ function NextUI:ValidateKey(inputKey, keyUrl)
         validKey = validKey:gsub("%s+", ""):lower()
         local normalizedInput = inputKey:gsub("%s+", ""):lower()
         
+        print("[NextUI Debug] Input key:", "'" .. normalizedInput .. "'")
+        print("[NextUI Debug] Valid key:", "'" .. validKey .. "'")
+        print("[NextUI Debug] Match:", normalizedInput == validKey)
+        
         if normalizedInput == validKey then
             authenticated = true
             authKey = inputKey
