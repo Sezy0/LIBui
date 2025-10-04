@@ -114,23 +114,56 @@ function NextUI:ValidateKey(inputKey, keyUrl)
         return true
     end
 
-    local success, validKey = pcall(function()
-        return HttpService:GetAsync(keyUrl)
+    -- Try to detect whether HTTP requests are allowed (Studio/Game Settings)
+    local httpEnabled = true
+    do
+        local ok, enabled = pcall(function()
+            return HttpService.HttpEnabled
+        end)
+        if ok and enabled == false then
+            httpEnabled = false
+        end
+    end
+
+    if not httpEnabled then
+        warn("[NextUI] HttpService.HttpEnabled = false. Enable Game Settings → Security → Allow HTTP Requests.")
+        return false
+    end
+
+    -- Fetch key using RequestAsync for better control and compatibility
+    local reqOk, responseOrErr = pcall(function()
+        return HttpService:RequestAsync({
+            Url = keyUrl,
+            Method = "GET",
+            Headers = {
+                ["User-Agent"] = "NextUI/1.0 (+roblox)",
+                ["Accept"] = "text/plain,*/*"
+            }
+        })
     end)
 
-    if success then
-        -- Normalize both keys: lowercase and remove all whitespace
-        validKey = validKey:gsub("%s+", ""):lower()
-        local normalizedInput = inputKey:gsub("%s+", ""):lower()
-        
-        if normalizedInput == validKey then
-            authenticated = true
-            authKey = inputKey
-            return true
-        end
-    else
-        warn("[NextUI] Failed to fetch key from: " .. keyUrl)
-        warn("[NextUI] Make sure HttpService is enabled in game settings!")
+    if not reqOk then
+        warn("[NextUI] Failed to fetch key from: " .. tostring(keyUrl))
+        warn("[NextUI] Error: " .. tostring(responseOrErr))
+        warn("[NextUI] Make sure HttpService is enabled in game settings and outbound traffic isn't blocked by a firewall.")
+        return false
+    end
+
+    local response = responseOrErr
+    if not response.Success then
+        warn(("[NextUI] HTTP %s when fetching key from: %s"):format(tostring(response.StatusCode), tostring(keyUrl)))
+        return false
+    end
+
+    local validKey = tostring(response.Body or "")
+    -- Normalize both keys: lowercase and remove all whitespace
+    validKey = validKey:gsub("%s+", ""):lower()
+    local normalizedInput = tostring(inputKey):gsub("%s+", ""):lower()
+
+    if normalizedInput == validKey and validKey ~= "" then
+        authenticated = true
+        authKey = inputKey
+        return true
     end
 
     return false
