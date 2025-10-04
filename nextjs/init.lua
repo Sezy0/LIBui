@@ -1095,12 +1095,12 @@ function NextUI:Window(config)
         TabsContainer.CanvasSize = UDim2.new(0, 0, 0, TabsLayout.AbsoluteContentSize.Y + 10)
     end)
 
-    -- Content Container (right side)
+    -- Content Container (right side) - adjusted for home bar
     local ContentFrame = Instance.new("ScrollingFrame")
     ContentFrame.Name = "ContentFrame"
     ContentFrame.Parent = MainFrame
     ContentFrame.Position = UDim2.new(0, 165, 0, 65)
-    ContentFrame.Size = UDim2.new(1, -180, 1, -80)
+    ContentFrame.Size = UDim2.new(1, -180, 1, -95)  -- Extra space for home bar
     ContentFrame.BackgroundTransparency = 1
     ContentFrame.BorderSizePixel = 0
     ContentFrame.ScrollBarThickness = 4
@@ -1117,8 +1117,32 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + 15)
     end)
 
-    -- Make draggable
+    -- iPhone-style Home Bar (Bottom)
+    local HomeBar = Instance.new("Frame")
+    HomeBar.Name = "HomeBar"
+    HomeBar.Parent = MainFrame
+    HomeBar.Position = UDim2.new(0, 0, 1, -25)
+    HomeBar.Size = UDim2.new(1, 0, 0, 25)
+    HomeBar.BackgroundTransparency = 1
+    HomeBar.BorderSizePixel = 0
+
+    -- Home Bar Indicator
+    local HomeBarIndicator = Instance.new("Frame")
+    HomeBarIndicator.Name = "Indicator"
+    HomeBarIndicator.Parent = HomeBar
+    HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
+    HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
+    HomeBarIndicator.Size = UDim2.new(0, 80, 0, 4)
+    HomeBarIndicator.BackgroundColor3 = Theme.TextTertiary
+    HomeBarIndicator.BorderSizePixel = 0
+
+    local HomeBarCorner = Instance.new("UICorner")
+    HomeBarCorner.CornerRadius = UDim.new(1, 0)
+    HomeBarCorner.Parent = HomeBarIndicator
+
+    -- Make draggable from header and home bar
     MakeDraggable(MainFrame, Header)
+    MakeDraggable(MainFrame, HomeBar)
 
     -- Now set up minimize button handler (after Sidebar and ContentFrame exist)
     MinimizeButton.MouseButton1Click:Connect(function()
