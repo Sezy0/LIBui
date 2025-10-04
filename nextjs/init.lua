@@ -275,12 +275,61 @@ function NextUI:Window(config)
         end
     end)
 
-    -- Content Container
+    -- Sidebar (left)
+    local Sidebar = Instance.new("Frame")
+    Sidebar.Name = "Sidebar"
+    Sidebar.Parent = MainFrame
+    Sidebar.Position = UDim2.new(0, 0, 0, 50)
+    Sidebar.Size = UDim2.new(0, 150, 1, -50)
+    Sidebar.BackgroundColor3 = Theme.Surface
+    Sidebar.BorderSizePixel = 0
+
+    local SidebarCorner = Instance.new("UICorner")
+    SidebarCorner.CornerRadius = UDim.new(0, 12)
+    SidebarCorner.Parent = Sidebar
+
+    -- Sidebar cover (hide top-right and bottom-right corners)
+    local SidebarCoverTop = Instance.new("Frame")
+    SidebarCoverTop.Parent = Sidebar
+    SidebarCoverTop.Position = UDim2.new(0.5, 0, 0, 0)
+    SidebarCoverTop.Size = UDim2.new(0.5, 0, 1, 0)
+    SidebarCoverTop.BackgroundColor3 = Theme.Surface
+    SidebarCoverTop.BorderSizePixel = 0
+
+    -- Sidebar divider
+    local SidebarDivider = Instance.new("Frame")
+    SidebarDivider.Parent = Sidebar
+    SidebarDivider.Position = UDim2.new(1, -1, 0, 0)
+    SidebarDivider.Size = UDim2.new(0, 1, 1, 0)
+    SidebarDivider.BackgroundColor3 = Theme.Border
+    SidebarDivider.BorderSizePixel = 0
+
+    -- Sidebar tabs container
+    local TabsContainer = Instance.new("ScrollingFrame")
+    TabsContainer.Name = "TabsContainer"
+    TabsContainer.Parent = Sidebar
+    TabsContainer.Position = UDim2.new(0, 10, 0, 10)
+    TabsContainer.Size = UDim2.new(1, -20, 1, -20)
+    TabsContainer.BackgroundTransparency = 1
+    TabsContainer.BorderSizePixel = 0
+    TabsContainer.ScrollBarThickness = 0
+    TabsContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+    local TabsLayout = Instance.new("UIListLayout")
+    TabsLayout.Parent = TabsContainer
+    TabsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabsLayout.Padding = UDim.new(0, 5)
+
+    TabsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        TabsContainer.CanvasSize = UDim2.new(0, 0, 0, TabsLayout.AbsoluteContentSize.Y + 10)
+    end)
+
+    -- Content Container (right side)
     local ContentFrame = Instance.new("ScrollingFrame")
     ContentFrame.Name = "ContentFrame"
     ContentFrame.Parent = MainFrame
-    ContentFrame.Position = UDim2.new(0, 15, 0, 65)
-    ContentFrame.Size = UDim2.new(1, -30, 1, -80)
+    ContentFrame.Position = UDim2.new(0, 165, 0, 65)
+    ContentFrame.Size = UDim2.new(1, -180, 1, -80)
     ContentFrame.BackgroundTransparency = 1
     ContentFrame.BorderSizePixel = 0
     ContentFrame.ScrollBarThickness = 4
@@ -300,14 +349,119 @@ function NextUI:Window(config)
     -- Make draggable
     MakeDraggable(MainFrame, Header)
 
+    -- Tab management
+    local tabs = {}
+    local currentTab = nil
+
     -- Window API
     local WindowAPI = {}
 
-    function WindowAPI:Section(sectionTitle)
+    function WindowAPI:Tab(tabName, tabIcon)
+        -- Tab container for sections
+        local TabContainer = Instance.new("Frame")
+        TabContainer.Name = tabName
+        TabContainer.Parent = ContentFrame
+        TabContainer.Size = UDim2.new(1, 0, 0, 0)
+        TabContainer.BackgroundTransparency = 1
+        TabContainer.Visible = false
+        TabContainer.AutomaticSize = Enum.AutomaticSize.Y
+
+        local TabLayout = Instance.new("UIListLayout")
+        TabLayout.Parent = TabContainer
+        TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        TabLayout.Padding = UDim.new(0, 15)
+
+        -- Tab button in sidebar
+        local TabButton = Instance.new("TextButton")
+        TabButton.Name = tabName .. "Button"
+        TabButton.Parent = TabsContainer
+        TabButton.Size = UDim2.new(1, 0, 0, 35)
+        TabButton.BackgroundColor3 = Theme.SurfaceHover
+        TabButton.BorderSizePixel = 0
+        TabButton.Font = Enum.Font.Gotham
+        TabButton.Text = "  " .. tabName
+        TabButton.TextColor3 = Theme.TextSecondary
+        TabButton.TextSize = 13
+        TabButton.TextXAlignment = Enum.TextXAlignment.Left
+        TabButton.AutoButtonColor = false
+
+        local TabButtonCorner = Instance.new("UICorner")
+        TabButtonCorner.CornerRadius = UDim.new(0, 8)
+        TabButtonCorner.Parent = TabButton
+
+        -- Tab icon (optional)
+        if tabIcon then
+            local TabIconLabel = Instance.new("ImageLabel")
+            TabIconLabel.Parent = TabButton
+            TabIconLabel.Position = UDim2.new(0, 8, 0.5, 0)
+            TabIconLabel.AnchorPoint = Vector2.new(0, 0.5)
+            TabIconLabel.Size = UDim2.new(0, 18, 0, 18)
+            TabIconLabel.BackgroundTransparency = 1
+            TabIconLabel.Image = "rbxassetid://" .. tostring(tabIcon)
+            TabIconLabel.ScaleType = Enum.ScaleType.Fit
+            TabButton.Text = "    " .. tabName
+        end
+
+        -- Function to switch to this tab
+        local function selectTab()
+            -- Hide all tabs
+            for _, tab in pairs(tabs) do
+                tab.container.Visible = false
+                tab.button.BackgroundColor3 = Theme.SurfaceHover
+                tab.button.TextColor3 = Theme.TextSecondary
+            end
+
+            -- Show this tab
+            TabContainer.Visible = true
+            TabButton.BackgroundColor3 = Theme.Border
+            TabButton.TextColor3 = Theme.Text
+            currentTab = tabName
+        end
+
+        TabButton.MouseButton1Click:Connect(selectTab)
+
+        -- Hover effects
+        TabButton.MouseEnter:Connect(function()
+            if currentTab ~= tabName then
+                TabButton.BackgroundColor3 = Theme.Border
+            end
+        end)
+
+        TabButton.MouseLeave:Connect(function()
+            if currentTab ~= tabName then
+                TabButton.BackgroundColor3 = Theme.SurfaceHover
+            end
+        end)
+
+        -- Store tab
+        tabs[tabName] = {
+            container = TabContainer,
+            button = TabButton,
+            select = selectTab
+        }
+
+        -- Select first tab automatically
+        if not currentTab then
+            selectTab()
+        end
+
+        -- Tab API
+        local TabAPI = {}
+
+        function TabAPI:Section(sectionTitle)
+            return WindowAPI:Section(sectionTitle, TabContainer)
+        end
+
+        return TabAPI
+    end
+
+    function WindowAPI:Section(sectionTitle, parent)
+        parent = parent or ContentFrame
+        
         -- Section Container
         local Section = Instance.new("Frame")
         Section.Name = "Section"
-        Section.Parent = ContentFrame
+        Section.Parent = parent
         Section.Size = UDim2.new(1, 0, 0, 0)
         Section.BackgroundColor3 = Theme.Surface
         Section.BorderSizePixel = 0
