@@ -104,27 +104,28 @@ local HttpService = game:GetService("HttpService")
 local authenticated = false
 local authKey = ""
 
--- Fetch valid key from pastebin
-local function fetchValidKey()
-    local success, result = pcall(function()
-        return HttpService:GetAsync("https://pastebin.com/raw/v2BNczLY")
-    end)
-    if success then
-        return result:gsub("%s+", "") -- Remove whitespace
-    else
-        warn("[NextUI] Failed to fetch key from server")
-        return nil
-    end
-end
-
 -- Validate key
-function NextUI:ValidateKey(inputKey)
-    local validKey = fetchValidKey()
-    if validKey and inputKey == validKey then
-        authenticated = true
-        authKey = inputKey
-        return true
+function NextUI:ValidateKey(inputKey, keyUrl)
+    if not keyUrl then
+        warn("[NextUI] Key URL required for validation")
+        return false
     end
+
+    local success, validKey = pcall(function()
+        return HttpService:GetAsync(keyUrl)
+    end)
+
+    if success then
+        validKey = validKey:gsub("%s+", "") -- Remove whitespace
+        if inputKey == validKey then
+            authenticated = true
+            authKey = inputKey
+            return true
+        end
+    else
+        warn("[NextUI] Failed to fetch key from: " .. keyUrl)
+    end
+
     return false
 end
 

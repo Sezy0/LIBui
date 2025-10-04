@@ -4,6 +4,9 @@
 
 local NextUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sezy0/LIBui/main/nextjs/init.lua"))()
 
+-- Configuration: Set your key URL here
+local KEY_URL = "https://pastebin.com/raw/v2BNczLY"  -- Change this to your own key URL
+
 -- Create Key Input GUI
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -140,7 +143,7 @@ local function verifyKey()
 
     wait(0.5)
 
-    local success = NextUI:ValidateKey(inputKey)
+    local success = NextUI:ValidateKey(inputKey, KEY_URL)
     
     if success then
         StatusLabel.Text = "✅ Key verified! Loading UI..."
