@@ -101,6 +101,7 @@ print("[NextUI] ScreenGui created successfully!")
 
 -- Authentication System
 local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
 local authenticated = false
 local authKey = ""
 
@@ -134,6 +135,244 @@ end
 -- Check if authenticated
 function NextUI:IsAuthenticated()
     return authenticated
+end
+
+-- Authentication UI
+function NextUI:Auth(config)
+    config = config or {}
+    local useKeySystem = config.UseKeySystem ~= false -- Default true
+    local keyUrl = config.KeyUrl or ""
+    local logoId = config.LogoId or "18858617508"
+    local discordLink = config.DiscordLink or "https://discord.gg/your-invite"
+    local onSuccess = config.OnSuccess or function() end
+
+    -- If key system disabled, bypass and execute callback
+    if not useKeySystem then
+        NextUI:ValidateKey("bypass", nil)
+        onSuccess()
+        return
+    end
+
+    -- Create Auth GUI
+    local LocalPlayer = Players.LocalPlayer
+    local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+    local KeyGui = Instance.new("ScreenGui")
+    KeyGui.Name = "NextUIKeyAuth"
+    KeyGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    KeyGui.ResetOnSpawn = false
+    KeyGui.Parent = PlayerGui
+
+    -- Main Frame
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Parent = KeyGui
+    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    MainFrame.Size = UDim2.new(0, 500, 0, 280)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+    MainFrame.BorderSizePixel = 0
+
+    local MainCorner = Instance.new("UICorner")
+    MainCorner.CornerRadius = UDim.new(0, 12)
+    MainCorner.Parent = MainFrame
+
+    local MainStroke = Instance.new("UIStroke")
+    MainStroke.Parent = MainFrame
+    MainStroke.Color = Color3.fromRGB(40, 40, 40)
+    MainStroke.Thickness = 1
+    MainStroke.Transparency = 0.7
+
+    -- Close Button (X)
+    local CloseButton = Instance.new("TextButton")
+    CloseButton.Parent = MainFrame
+    CloseButton.AnchorPoint = Vector2.new(1, 0)
+    CloseButton.Position = UDim2.new(1, -10, 0, 10)
+    CloseButton.Size = UDim2.new(0, 30, 0, 30)
+    CloseButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    CloseButton.BorderSizePixel = 0
+    CloseButton.Font = Enum.Font.GothamBold
+    CloseButton.Text = "X"
+    CloseButton.TextColor3 = Color3.fromRGB(255, 80, 80)
+    CloseButton.TextSize = 16
+    CloseButton.ZIndex = 10
+
+    local CloseCorner = Instance.new("UICorner")
+    CloseCorner.CornerRadius = UDim.new(0, 6)
+    CloseCorner.Parent = CloseButton
+
+    CloseButton.MouseEnter:Connect(function()
+        Tween(CloseButton, {BackgroundColor3 = Color3.fromRGB(255, 80, 80)})
+    end)
+
+    CloseButton.MouseLeave:Connect(function()
+        Tween(CloseButton, {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+    end)
+
+    CloseButton.MouseButton1Click:Connect(function()
+        KeyGui:Destroy()
+    end)
+
+    -- Logo Section (Left Side)
+    local LogoFrame = Instance.new("Frame")
+    LogoFrame.Parent = MainFrame
+    LogoFrame.Position = UDim2.new(0, 20, 0, 20)
+    LogoFrame.Size = UDim2.new(0, 150, 1, -40)
+    LogoFrame.BackgroundTransparency = 1
+
+    local LogoImage = Instance.new("ImageLabel")
+    LogoImage.Parent = LogoFrame
+    LogoImage.AnchorPoint = Vector2.new(0.5, 0.5)
+    LogoImage.Position = UDim2.new(0.5, 0, 0.35, 0)
+    LogoImage.Size = UDim2.new(0, 120, 0, 120)
+    LogoImage.BackgroundTransparency = 1
+    LogoImage.Image = "rbxassetid://" .. logoId
+    LogoImage.ScaleType = Enum.ScaleType.Fit
+
+    local LogoCorner = Instance.new("UICorner")
+    LogoCorner.CornerRadius = UDim.new(0, 12)
+    LogoCorner.Parent = LogoImage
+
+    local PoweredBy = Instance.new("TextLabel")
+    PoweredBy.Parent = LogoFrame
+    PoweredBy.Position = UDim2.new(0, 0, 1, -35)
+    PoweredBy.Size = UDim2.new(1, 0, 0, 30)
+    PoweredBy.BackgroundTransparency = 1
+    PoweredBy.Font = Enum.Font.Gotham
+    PoweredBy.Text = "Powered by FoxZy"
+    PoweredBy.TextColor3 = Color3.fromRGB(100, 100, 100)
+    PoweredBy.TextSize = 11
+    PoweredBy.TextXAlignment = Enum.TextXAlignment.Center
+
+    -- Right Content Section
+    local ContentFrame = Instance.new("Frame")
+    ContentFrame.Parent = MainFrame
+    ContentFrame.Position = UDim2.new(0, 190, 0, 20)
+    ContentFrame.Size = UDim2.new(0, 290, 1, -40)
+    ContentFrame.BackgroundTransparency = 1
+
+    -- Title
+    local Title = Instance.new("TextLabel")
+    Title.Parent = ContentFrame
+    Title.Position = UDim2.new(0, 0, 0, 10)
+    Title.Size = UDim2.new(1, 0, 0, 25)
+    Title.BackgroundTransparency = 1
+    Title.Font = Enum.Font.GothamBold
+    Title.Text = "Please enter your key"
+    Title.TextColor3 = Color3.fromRGB(245, 245, 245)
+    Title.TextSize = 16
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+
+    -- Key Input Box
+    local KeyInput = Instance.new("TextBox")
+    KeyInput.Parent = ContentFrame
+    KeyInput.Position = UDim2.new(0, 0, 0, 50)
+    KeyInput.Size = UDim2.new(1, 0, 0, 45)
+    KeyInput.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    KeyInput.BorderSizePixel = 0
+    KeyInput.Font = Enum.Font.Gotham
+    KeyInput.PlaceholderText = "Enter key"
+    KeyInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
+    KeyInput.Text = ""
+    KeyInput.TextColor3 = Color3.fromRGB(245, 245, 245)
+    KeyInput.TextSize = 14
+    KeyInput.ClearTextOnFocus = false
+
+    local KeyInputCorner = Instance.new("UICorner")
+    KeyInputCorner.CornerRadius = UDim.new(0, 8)
+    KeyInputCorner.Parent = KeyInput
+
+    local KeyInputStroke = Instance.new("UIStroke")
+    KeyInputStroke.Parent = KeyInput
+    KeyInputStroke.Color = Color3.fromRGB(40, 40, 40)
+    KeyInputStroke.Thickness = 1
+    KeyInputStroke.Transparency = 0.5
+
+    -- Get Key Button
+    local GetKeyButton = Instance.new("TextButton")
+    GetKeyButton.Parent = ContentFrame
+    GetKeyButton.Position = UDim2.new(0, 0, 1, -50)
+    GetKeyButton.Size = UDim2.new(1, 0, 0, 40)
+    GetKeyButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    GetKeyButton.BorderSizePixel = 0
+    GetKeyButton.Font = Enum.Font.GothamBold
+    GetKeyButton.Text = "Get Key"
+    GetKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    GetKeyButton.TextSize = 13
+
+    local GetKeyCorner = Instance.new("UICorner")
+    GetKeyCorner.CornerRadius = UDim.new(0, 8)
+    GetKeyCorner.Parent = GetKeyButton
+
+    local GetKeyStroke = Instance.new("UIStroke")
+    GetKeyStroke.Parent = GetKeyButton
+    GetKeyStroke.Color = Color3.fromRGB(60, 60, 60)
+    GetKeyStroke.Thickness = 1
+    GetKeyStroke.Transparency = 0.5
+
+    -- Status Label
+    local StatusLabel = Instance.new("TextLabel")
+    StatusLabel.Parent = ContentFrame
+    StatusLabel.Position = UDim2.new(0, 0, 0, 105)
+    StatusLabel.Size = UDim2.new(1, 0, 0, 20)
+    StatusLabel.BackgroundTransparency = 1
+    StatusLabel.Font = Enum.Font.Gotham
+    StatusLabel.Text = ""
+    StatusLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
+    StatusLabel.TextSize = 10
+    StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    -- Button Hover Effect
+    GetKeyButton.MouseEnter:Connect(function()
+        Tween(GetKeyButton, {BackgroundColor3 = Color3.fromRGB(35, 35, 35)})
+    end)
+
+    GetKeyButton.MouseLeave:Connect(function()
+        Tween(GetKeyButton, {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
+    end)
+
+    -- Get Key Button Click (Copy Discord link)
+    GetKeyButton.MouseButton1Click:Connect(function()
+        setclipboard(discordLink)
+        StatusLabel.Text = "Discord link copied to clipboard!"
+        StatusLabel.TextColor3 = Color3.fromRGB(80, 200, 120)
+        task.wait(2)
+        StatusLabel.Text = ""
+    end)
+
+    -- Auto-verify on text change
+    local verifying = false
+    KeyInput:GetPropertyChangedSignal("Text"):Connect(function()
+        local inputKey = KeyInput.Text
+        if inputKey == "" or verifying then return end
+        
+        -- Auto-verify when key length is reasonable (e.g., 3+ characters)
+        if #inputKey >= 3 then
+            verifying = true
+            StatusLabel.Text = "Verifying..."
+            StatusLabel.TextColor3 = Color3.fromRGB(255, 200, 80)
+            
+            task.wait(0.3)
+            
+            local success = NextUI:ValidateKey(inputKey, keyUrl)
+            
+            if success then
+                StatusLabel.Text = "Key verified! Loading..."
+                StatusLabel.TextColor3 = Color3.fromRGB(80, 200, 120)
+                
+                task.wait(1)
+                KeyGui:Destroy()
+                
+                -- Execute success callback
+                onSuccess()
+            else
+                StatusLabel.Text = "Invalid key"
+                StatusLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+                KeyInput.Text = ""
+            end
+            
+            verifying = false
+        end
+    end)
 end
 
 -- Main Window Function
