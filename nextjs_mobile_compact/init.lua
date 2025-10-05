@@ -61,10 +61,11 @@ local Sizes = {
     ButtonFont = isSmallMobile and 10 or (isMobile and 11 or 12),
     LabelFont = isSmallMobile and 9 or (isMobile and 10 or 11),
     
-    -- Spacing
-    Padding = isMobile and 8 or 12,
-    ButtonHeight = isMobile and 34 or 38,
-    SectionSpacing = isMobile and 10 or 15,
+    -- Spacing (more compact for mobile)
+    Padding = isSmallMobile and 6 or (isMobile and 8 or 10),
+    ButtonHeight = isSmallMobile and 26 or (isMobile and 28 or 32),
+    SectionSpacing = isSmallMobile and 6 or (isMobile and 8 or 12),
+    ElementSpacing = isSmallMobile and 4 or (isMobile and 5 or 6),
 }
 
 print("[NextUI Mobile] Window size:", Sizes.WindowWidth, "x", Sizes.WindowHeight)
@@ -653,12 +654,13 @@ function NextUI:Window(config)
         InnerShadow.Thickness = 1
         InnerShadow.Transparency = 0.8
 
-        -- Section Title
+        -- Section Title (more compact)
+        local titleHeight = isSmallMobile and 16 or (isMobile and 18 or 20)
         local SectionTitle = Instance.new("TextLabel")
         SectionTitle.Name = "SectionTitle"
         SectionTitle.Parent = Section
         SectionTitle.Position = UDim2.new(0, Sizes.Padding, 0, Sizes.Padding)
-        SectionTitle.Size = UDim2.new(1, -Sizes.Padding * 2, 0, 20)
+        SectionTitle.Size = UDim2.new(1, -Sizes.Padding * 2, 0, titleHeight)
         SectionTitle.BackgroundTransparency = 1
         SectionTitle.Font = Enum.Font.GothamBold
         SectionTitle.Text = sectionTitle
@@ -666,11 +668,12 @@ function NextUI:Window(config)
         SectionTitle.TextSize = Sizes.SectionFont
         SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
 
-        -- Section Content
+        -- Section Content (adjust offset for smaller title)
+        local contentOffset = titleHeight + Sizes.Padding + (isMobile and 3 or 5)
         local SectionContent = Instance.new("Frame")
         SectionContent.Name = "SectionContent"
         SectionContent.Parent = Section
-        SectionContent.Position = UDim2.new(0, Sizes.Padding, 0, Sizes.Padding + 25)
+        SectionContent.Position = UDim2.new(0, Sizes.Padding, 0, contentOffset)
         SectionContent.Size = UDim2.new(1, -Sizes.Padding * 2, 0, 0)
         SectionContent.BackgroundTransparency = 1
         SectionContent.AutomaticSize = Enum.AutomaticSize.Y
@@ -678,7 +681,7 @@ function NextUI:Window(config)
         local SectionLayout = Instance.new("UIListLayout")
         SectionLayout.Parent = SectionContent
         SectionLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        SectionLayout.Padding = UDim.new(0, 8)
+        SectionLayout.Padding = UDim.new(0, Sizes.ElementSpacing)
 
         local SectionPadding = Instance.new("UIPadding")
         SectionPadding.Parent = Section
@@ -791,10 +794,11 @@ function NextUI:Window(config)
         end
 
         function SectionAPI:Label(labelText)
+            local labelMinHeight = isSmallMobile and 16 or (isMobile and 18 or 20)
             local Label = Instance.new("TextLabel")
             Label.Name = "Label"
             Label.Parent = SectionContent
-            Label.Size = UDim2.new(1, 0, 0, 20)
+            Label.Size = UDim2.new(1, 0, 0, labelMinHeight)
             Label.BackgroundTransparency = 1
             Label.Font = Enum.Font.Gotham
             Label.Text = labelText
