@@ -738,16 +738,24 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + Sizes.SectionSpacing)
     end)
 
-    -- iPhone-style Home Bar (below MainFrame) - PARENT TO SCREENGUI!
+    -- iPhone-style Home Bar (below MainFrame)
+    print("[HomeBar] Creating HomeBar...")
+    print("[HomeBar] WindowSize:", Sizes.WindowWidth, Sizes.WindowHeight)
+    print("[HomeBar] isMobile:", isMobile)
+    
     local HomeBarContainer = Instance.new("Frame")
     HomeBarContainer.Name = "HomeBarContainer"
-    HomeBarContainer.Parent = ScreenGui  -- Parent to ScreenGui to avoid clipping
-    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0)
-    HomeBarContainer.Position = UDim2.new(0.5, 0, 0.5, Sizes.WindowHeight/2 + 5)  -- Below MainFrame center
-    HomeBarContainer.Size = UDim2.new(0, Sizes.WindowWidth, 0, isMobile and 20 or 25)
+    HomeBarContainer.Parent = ScreenGui
+    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+    HomeBarContainer.Position = UDim2.new(0.5, 0, 0.5, Sizes.WindowHeight/2 + 15)  -- 15px below MainFrame
+    HomeBarContainer.Size = UDim2.new(0, Sizes.WindowWidth, 0, 30)
     HomeBarContainer.BackgroundTransparency = 1
     HomeBarContainer.BorderSizePixel = 0
-    HomeBarContainer.ZIndex = 100
+    HomeBarContainer.ZIndex = 1000
+    HomeBarContainer.Visible = true
+    
+    print("[HomeBar] Container Position:", HomeBarContainer.Position)
+    print("[HomeBar] Container Size:", HomeBarContainer.Size)
 
     -- Home Bar Indicator (garis)
     local HomeBarIndicator = Instance.new("Frame")
@@ -755,33 +763,38 @@ function NextUI:Window(config)
     HomeBarIndicator.Parent = HomeBarContainer
     HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
     HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
-    HomeBarIndicator.Size = UDim2.new(0, isMobile and 60 or 80, 0, isMobile and 3 or 4)
-    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+    HomeBarIndicator.Size = UDim2.new(0, isMobile and 70 or 90, 0, isMobile and 4 or 5)
+    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
     HomeBarIndicator.BorderSizePixel = 0
-    HomeBarIndicator.ZIndex = 101
+    HomeBarIndicator.ZIndex = 1001
+    HomeBarIndicator.Visible = true
+    
+    print("[HomeBar] Indicator Size:", HomeBarIndicator.Size)
+    print("[HomeBar] Indicator Color:", HomeBarIndicator.BackgroundColor3)
 
     local HomeBarCorner = Instance.new("UICorner")
-    HomeBarCorner.CornerRadius = UDim.new(1, 0)  -- Full rounded
+    HomeBarCorner.CornerRadius = UDim.new(1, 0)
     HomeBarCorner.Parent = HomeBarIndicator
     
-    -- Update HomeBar position when MainFrame moves (sync position)
+    print("[HomeBar] HomeBar created successfully!")
+    
+    -- Update HomeBar position when MainFrame moves
     local function updateHomeBarPosition()
-        local mainFrameBottomY = MainFrame.Position.Y.Offset + Sizes.WindowHeight/2
         HomeBarContainer.Position = UDim2.new(
             MainFrame.Position.X.Scale,
             MainFrame.Position.X.Offset,
             MainFrame.Position.Y.Scale,
-            mainFrameBottomY + 5
+            MainFrame.Position.Y.Offset + Sizes.WindowHeight/2 + 15
         )
     end
     
     -- Initial position
     updateHomeBarPosition()
     
-    -- Update on MainFrame property change
+    -- Update on drag
     MainFrame:GetPropertyChangedSignal("Position"):Connect(updateHomeBarPosition)
 
-    -- Make draggable from header AND home bar
+    -- Make draggable
     MakeDraggable(MainFrame, Header)
     MakeDraggable(MainFrame, HomeBarContainer)
 
