@@ -738,8 +738,35 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + Sizes.SectionSpacing)
     end)
 
-    -- Make draggable
+    -- iPhone-style Home Bar (below MainFrame)
+    local HomeBarContainer = Instance.new("Frame")
+    HomeBarContainer.Name = "HomeBarContainer"
+    HomeBarContainer.Parent = MainFrame
+    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0)
+    HomeBarContainer.Position = UDim2.new(0.5, 0, 1, 5)  -- 5px below MainFrame
+    HomeBarContainer.Size = UDim2.new(1, 0, 0, isMobile and 20 or 25)
+    HomeBarContainer.BackgroundTransparency = 1
+    HomeBarContainer.BorderSizePixel = 0
+    HomeBarContainer.ZIndex = 100
+
+    -- Home Bar Indicator (garis)
+    local HomeBarIndicator = Instance.new("Frame")
+    HomeBarIndicator.Name = "Indicator"
+    HomeBarIndicator.Parent = HomeBarContainer
+    HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
+    HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
+    HomeBarIndicator.Size = UDim2.new(0, isMobile and 60 or 80, 0, isMobile and 3 or 4)
+    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+    HomeBarIndicator.BorderSizePixel = 0
+    HomeBarIndicator.ZIndex = 101
+
+    local HomeBarCorner = Instance.new("UICorner")
+    HomeBarCorner.CornerRadius = UDim.new(1, 0)  -- Full rounded
+    HomeBarCorner.Parent = HomeBarIndicator
+
+    -- Make draggable from header AND home bar
     MakeDraggable(MainFrame, Header)
+    MakeDraggable(MainFrame, HomeBarContainer)
 
     -- Tab management
     local tabs = {}
