@@ -598,8 +598,16 @@ function NextUI:Window(config)
     MinimizeButton.MouseButton1Click:Connect(function()
         isMinimized = true
         
-        -- Save current position of MainFrame to RestoreButton
-        RestoreButton.Position = MainFrame.Position
+        -- Calculate logo position at top-left of MainFrame
+        local buttonSize = isMobile and 50 or 55
+        local offset = buttonSize / 2 + 10  -- Half button size + padding
+        
+        RestoreButton.Position = UDim2.new(
+            MainFrame.Position.X.Scale,
+            MainFrame.Position.X.Offset + offset,
+            MainFrame.Position.Y.Scale,
+            MainFrame.Position.Y.Offset + offset
+        )
         
         MainFrame.Visible = false
         RestoreButton.Visible = true
@@ -607,7 +615,7 @@ function NextUI:Window(config)
         -- Animate restore button
         RestoreButton.Size = UDim2.new(0, 0, 0, 0)
         Tween(RestoreButton, {
-            Size = UDim2.new(0, isMobile and 50 or 55, 0, isMobile and 50 or 55)
+            Size = UDim2.new(0, buttonSize, 0, buttonSize)
         }, 0.3)
     end)
 
