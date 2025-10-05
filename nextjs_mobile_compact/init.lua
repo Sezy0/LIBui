@@ -1044,6 +1044,188 @@ function NextUI:Window(config)
             return Label
         end
 
+        function SectionAPI:Dropdown(dropdownText, options, callback)
+            local selected = options[1] or "None"
+            local isOpen = false
+            
+            -- Container for dropdown
+            local DropdownContainer = Instance.new("Frame")
+            DropdownContainer.Name = "Dropdown"
+            DropdownContainer.Parent = SectionContent
+            DropdownContainer.Size = UDim2.new(1, 0, 0, 0)
+            DropdownContainer.BackgroundTransparency = 1
+            DropdownContainer.AutomaticSize = Enum.AutomaticSize.Y
+            DropdownContainer.ClipsDescendants = false
+            
+            -- Main dropdown button
+            local DropdownButton = Instance.new("TextButton")
+            DropdownButton.Name = "DropdownButton"
+            DropdownButton.Parent = DropdownContainer
+            DropdownButton.Size = UDim2.new(1, 0, 0, Sizes.ButtonHeight)
+            DropdownButton.BackgroundColor3 = Theme.SurfaceHover
+            DropdownButton.BorderSizePixel = 0
+            DropdownButton.AutoButtonColor = false
+            DropdownButton.Text = ""
+            
+            local DropdownCorner = Instance.new("UICorner")
+            DropdownCorner.CornerRadius = UDim.new(0, 6)
+            DropdownCorner.Parent = DropdownButton
+            
+            local DropdownStroke = Instance.new("UIStroke")
+            DropdownStroke.Parent = DropdownButton
+            DropdownStroke.Color = Theme.Border
+            DropdownStroke.Thickness = 1
+            DropdownStroke.Transparency = 0.9
+            
+            -- Dropdown label
+            local DropdownLabel = Instance.new("TextLabel")
+            DropdownLabel.Parent = DropdownButton
+            DropdownLabel.Position = UDim2.new(0, Sizes.Padding, 0, 0)
+            DropdownLabel.Size = UDim2.new(0.5, -Sizes.Padding, 1, 0)
+            DropdownLabel.BackgroundTransparency = 1
+            DropdownLabel.Font = Enum.Font.Gotham
+            DropdownLabel.Text = dropdownText
+            DropdownLabel.TextColor3 = Theme.TextSecondary
+            DropdownLabel.TextSize = Sizes.ButtonFont
+            DropdownLabel.TextXAlignment = Enum.TextXAlignment.Left
+            DropdownLabel.TextTruncate = Enum.TextTruncate.AtEnd
+            
+            -- Selected value label
+            local SelectedLabel = Instance.new("TextLabel")
+            SelectedLabel.Parent = DropdownButton
+            SelectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
+            SelectedLabel.Size = UDim2.new(0.5, -Sizes.Padding * 3, 1, 0)
+            SelectedLabel.BackgroundTransparency = 1
+            SelectedLabel.Font = Enum.Font.GothamBold
+            SelectedLabel.Text = selected
+            SelectedLabel.TextColor3 = Theme.Text
+            SelectedLabel.TextSize = Sizes.ButtonFont
+            SelectedLabel.TextXAlignment = Enum.TextXAlignment.Right
+            SelectedLabel.TextTruncate = Enum.TextTruncate.AtEnd
+            
+            -- Arrow icon
+            local Arrow = Instance.new("TextLabel")
+            Arrow.Parent = DropdownButton
+            Arrow.AnchorPoint = Vector2.new(1, 0.5)
+            Arrow.Position = UDim2.new(1, -Sizes.Padding, 0.5, 0)
+            Arrow.Size = UDim2.new(0, 12, 0, 12)
+            Arrow.BackgroundTransparency = 1
+            Arrow.Font = Enum.Font.GothamBold
+            Arrow.Text = "▼"
+            Arrow.TextColor3 = Theme.TextSecondary
+            Arrow.TextSize = 8
+            
+            -- Options list (hidden by default)
+            local OptionsList = Instance.new("ScrollingFrame")
+            OptionsList.Name = "OptionsList"
+            OptionsList.Parent = DropdownContainer
+            OptionsList.Position = UDim2.new(0, 0, 0, Sizes.ButtonHeight + 4)
+            OptionsList.Size = UDim2.new(1, 0, 0, 0)
+            OptionsList.BackgroundColor3 = Theme.Surface
+            OptionsList.BorderSizePixel = 0
+            OptionsList.ScrollBarThickness = isMobile and 2 or 3
+            OptionsList.ScrollBarImageColor3 = Theme.Border
+            OptionsList.Visible = false
+            OptionsList.CanvasSize = UDim2.new(0, 0, 0, 0)
+            OptionsList.ClipsDescendants = true
+            
+            local OptionsCorner = Instance.new("UICorner")
+            OptionsCorner.CornerRadius = UDim.new(0, 6)
+            OptionsCorner.Parent = OptionsList
+            
+            local OptionsStroke = Instance.new("UIStroke")
+            OptionsStroke.Parent = OptionsList
+            OptionsStroke.Color = Theme.Border
+            OptionsStroke.Thickness = 1
+            OptionsStroke.Transparency = 0.7
+            
+            local OptionsLayout = Instance.new("UIListLayout")
+            OptionsLayout.Parent = OptionsList
+            OptionsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            OptionsLayout.Padding = UDim.new(0, 2)
+            
+            -- Create option buttons
+            local maxVisibleOptions = 4
+            local optionHeight = Sizes.ButtonHeight - 4
+            
+            for i, option in ipairs(options) do
+                local OptionButton = Instance.new("TextButton")
+                OptionButton.Name = "Option" .. i
+                OptionButton.Parent = OptionsList
+                OptionButton.Size = UDim2.new(1, 0, 0, optionHeight)
+                OptionButton.BackgroundColor3 = Theme.SurfaceHover
+                OptionButton.BorderSizePixel = 0
+                OptionButton.Font = Enum.Font.Gotham
+                OptionButton.Text = option
+                OptionButton.TextColor3 = Theme.Text
+                OptionButton.TextSize = Sizes.ButtonFont - 1
+                OptionButton.AutoButtonColor = false
+                
+                local OptionCorner = Instance.new("UICorner")
+                OptionCorner.CornerRadius = UDim.new(0, 4)
+                OptionCorner.Parent = OptionButton
+                
+                OptionButton.MouseEnter:Connect(function()
+                    Tween(OptionButton, {BackgroundColor3 = Theme.Border})
+                end)
+                
+                OptionButton.MouseLeave:Connect(function()
+                    Tween(OptionButton, {BackgroundColor3 = Theme.SurfaceHover})
+                end)
+                
+                OptionButton.MouseButton1Click:Connect(function()
+                    selected = option
+                    SelectedLabel.Text = selected
+                    isOpen = false
+                    
+                    -- Close dropdown with animation
+                    Tween(OptionsList, {Size = UDim2.new(1, 0, 0, 0)}, 0.2)
+                    Tween(Arrow, {Rotation = 0}, 0.2)
+                    task.wait(0.2)
+                    OptionsList.Visible = false
+                    
+                    pcall(callback, selected)
+                end)
+            end
+            
+            -- Update canvas size
+            OptionsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+                local totalHeight = OptionsLayout.AbsoluteContentSize.Y + 4
+                local maxHeight = (optionHeight + 2) * maxVisibleOptions
+                OptionsList.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+            end)
+            
+            -- Toggle dropdown
+            DropdownButton.MouseButton1Click:Connect(function()
+                isOpen = not isOpen
+                
+                if isOpen then
+                    OptionsList.Visible = true
+                    local totalHeight = OptionsLayout.AbsoluteContentSize.Y + 4
+                    local maxHeight = (optionHeight + 2) * maxVisibleOptions
+                    local finalHeight = math.min(totalHeight, maxHeight)
+                    
+                    Tween(OptionsList, {Size = UDim2.new(1, 0, 0, finalHeight)}, 0.2)
+                    Tween(Arrow, {Rotation = 180}, 0.2)
+                else
+                    Tween(OptionsList, {Size = UDim2.new(1, 0, 0, 0)}, 0.2)
+                    Tween(Arrow, {Rotation = 0}, 0.2)
+                    task.wait(0.2)
+                    OptionsList.Visible = false
+                end
+            end)
+            
+            DropdownButton.MouseEnter:Connect(function()
+                Tween(DropdownButton, {BackgroundColor3 = Theme.Border})
+            end)
+            
+            DropdownButton.MouseLeave:Connect(function()
+                Tween(DropdownButton, {BackgroundColor3 = Theme.SurfaceHover})
+            end)
+            
+            return DropdownContainer
+        end
+
         return SectionAPI
     end
 
