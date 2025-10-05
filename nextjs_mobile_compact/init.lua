@@ -599,14 +599,18 @@ function NextUI:Window(config)
         isMinimized = true
         
         -- Calculate logo position at top-left of MainFrame
+        -- MainFrame has AnchorPoint 0.5,0.5 so position is at center
+        -- Need to subtract half width/height to get top-left corner
         local buttonSize = isMobile and 50 or 55
-        local offset = buttonSize / 2 + 10  -- Half button size + padding
+        local halfWidth = Sizes.WindowWidth / 2
+        local halfHeight = Sizes.WindowHeight / 2
+        local padding = buttonSize / 2 + 10  -- Half button size + 10px from edge
         
         RestoreButton.Position = UDim2.new(
             MainFrame.Position.X.Scale,
-            MainFrame.Position.X.Offset + offset,
+            MainFrame.Position.X.Offset - halfWidth + padding,
             MainFrame.Position.Y.Scale,
-            MainFrame.Position.Y.Offset + offset
+            MainFrame.Position.Y.Offset - halfHeight + padding
         )
         
         MainFrame.Visible = false
