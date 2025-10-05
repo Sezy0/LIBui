@@ -531,8 +531,62 @@ function NextUI:Window(config)
     RestorePadding.PaddingLeft = UDim.new(0, 8)
     RestorePadding.PaddingRight = UDim.new(0, 8)
 
-    -- Make restore button draggable too
-    MakeDraggable(RestoreButton, RestoreButton)
+    -- Drag detection for restore button
+    local restoreDragging = false
+    local restoreDragStart = nil
+    local restoreStartPos = nil
+    
+    RestoreButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            restoreDragging = false  -- Reset drag state
+            restoreDragStart = input.Position
+            restoreStartPos = RestoreButton.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    -- Check if it was a drag or click
+                    if not restoreDragging then
+                        -- It was a click, restore the window
+                        MainFrame.Position = RestoreButton.Position
+                        RestoreButton.Visible = false
+                        MainFrame.Visible = true
+                        
+                        -- Animate main frame
+                        local originalSize = MainFrame.Size
+                        MainFrame.Size = UDim2.new(0, 0, 0, 0)
+                        Tween(MainFrame, {Size = originalSize}, 0.3)
+                    end
+                    -- If it was a drag, do nothing (just stay minimized)
+                end
+            end)
+        end
+    end)
+    
+    RestoreButton.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if restoreDragStart then
+                local delta = input.Position - restoreDragStart
+                -- If moved more than 5 pixels, it's a drag
+                if math.abs(delta.X) > 5 or math.abs(delta.Y) > 5 then
+                    restoreDragging = true
+                end
+            end
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and restoreDragStart then
+            if restoreDragging then
+                local delta = input.Position - restoreDragStart
+                RestoreButton.Position = UDim2.new(
+                    restoreStartPos.X.Scale,
+                    restoreStartPos.X.Offset + delta.X,
+                    restoreStartPos.Y.Scale,
+                    restoreStartPos.Y.Offset + delta.Y
+                )
+            end
+        end
+    end)
 
     -- Minimize functionality
     local isMinimized = false
@@ -551,21 +605,6 @@ function NextUI:Window(config)
         Tween(RestoreButton, {
             Size = UDim2.new(0, isMobile and 50 or 55, 0, isMobile and 50 or 55)
         }, 0.3)
-    end)
-
-    RestoreButton.MouseButton1Click:Connect(function()
-        isMinimized = false
-        
-        -- Restore MainFrame to RestoreButton's current position
-        MainFrame.Position = RestoreButton.Position
-        
-        RestoreButton.Visible = false
-        MainFrame.Visible = true
-        
-        -- Animate main frame
-        local originalSize = MainFrame.Size
-        MainFrame.Size = UDim2.new(0, 0, 0, 0)
-        Tween(MainFrame, {Size = originalSize}, 0.3)
     end)
 
     RestoreButton.MouseEnter:Connect(function()
