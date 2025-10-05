@@ -1,7 +1,10 @@
 -- ============================================
 -- NextJS Mobile Compact UI Library
 -- Optimized for Mobile + Desktop Compatible
+-- VERSION: 2.0.0 - CLEANED (No Debug Logs)
 -- ============================================
+
+print("[NextUI] v2.0.0 Loading (CLEANED VERSION)...")
 
 local NextUI = {}
 
