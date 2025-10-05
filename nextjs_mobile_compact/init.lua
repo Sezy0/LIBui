@@ -500,18 +500,17 @@ function NextUI:Window(config)
     end)
 
     -- Floating Restore Button (hidden by default)
-    local RestoreButton = Instance.new("TextButton")
+    local RestoreButton = Instance.new("ImageButton")
     RestoreButton.Name = "RestoreButton"
     RestoreButton.Parent = ScreenGui
     RestoreButton.AnchorPoint = Vector2.new(0.5, 0.5)
     RestoreButton.Position = MainFrame.Position  -- Start at same position as MainFrame
-    RestoreButton.Size = UDim2.new(0, isMobile and 45 or 50, 0, isMobile and 45 or 50)
+    RestoreButton.Size = UDim2.new(0, isMobile and 50 or 55, 0, isMobile and 50 or 55)
     RestoreButton.BackgroundColor3 = Theme.Surface
     RestoreButton.BorderSizePixel = 0
-    RestoreButton.Text = "◱"
-    RestoreButton.Font = Enum.Font.GothamBold
-    RestoreButton.TextColor3 = Theme.Accent
-    RestoreButton.TextSize = isMobile and 18 or 20
+    RestoreButton.Image = "rbxassetid://133508780883906"  -- Logo image
+    RestoreButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    RestoreButton.ScaleType = Enum.ScaleType.Fit
     RestoreButton.Visible = false
     RestoreButton.ZIndex = 100
 
@@ -523,6 +522,14 @@ function NextUI:Window(config)
     RestoreStroke.Parent = RestoreButton
     RestoreStroke.Color = Theme.Border
     RestoreStroke.Thickness = 2
+    
+    -- Padding for logo inside button
+    local RestorePadding = Instance.new("UIPadding")
+    RestorePadding.Parent = RestoreButton
+    RestorePadding.PaddingTop = UDim.new(0, 8)
+    RestorePadding.PaddingBottom = UDim.new(0, 8)
+    RestorePadding.PaddingLeft = UDim.new(0, 8)
+    RestorePadding.PaddingRight = UDim.new(0, 8)
 
     -- Make restore button draggable too
     MakeDraggable(RestoreButton, RestoreButton)
@@ -542,7 +549,7 @@ function NextUI:Window(config)
         -- Animate restore button
         RestoreButton.Size = UDim2.new(0, 0, 0, 0)
         Tween(RestoreButton, {
-            Size = UDim2.new(0, isMobile and 45 or 50, 0, isMobile and 45 or 50)
+            Size = UDim2.new(0, isMobile and 50 or 55, 0, isMobile and 50 or 55)
         }, 0.3)
     end)
 
@@ -563,12 +570,14 @@ function NextUI:Window(config)
 
     RestoreButton.MouseEnter:Connect(function()
         Tween(RestoreButton, {BackgroundColor3 = Theme.SurfaceHover})
-        Tween(RestoreButton, {Size = UDim2.new(0, (isMobile and 45 or 50) + 5, 0, (isMobile and 45 or 50) + 5)})
+        Tween(RestoreButton, {ImageColor3 = Theme.Accent})
+        Tween(RestoreButton, {Size = UDim2.new(0, (isMobile and 50 or 55) + 5, 0, (isMobile and 50 or 55) + 5)})
     end)
 
     RestoreButton.MouseLeave:Connect(function()
         Tween(RestoreButton, {BackgroundColor3 = Theme.Surface})
-        Tween(RestoreButton, {Size = UDim2.new(0, isMobile and 45 or 50, 0, isMobile and 45 or 50)})
+        Tween(RestoreButton, {ImageColor3 = Color3.fromRGB(255, 255, 255)})
+        Tween(RestoreButton, {Size = UDim2.new(0, isMobile and 50 or 55, 0, isMobile and 50 or 55)})
     end)
 
     -- Sidebar
