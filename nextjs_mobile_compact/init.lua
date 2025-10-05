@@ -738,13 +738,13 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + Sizes.SectionSpacing)
     end)
 
-    -- iPhone-style Home Bar (below MainFrame)
+    -- iPhone-style Home Bar (below MainFrame) - PARENT TO SCREENGUI!
     local HomeBarContainer = Instance.new("Frame")
     HomeBarContainer.Name = "HomeBarContainer"
-    HomeBarContainer.Parent = MainFrame
+    HomeBarContainer.Parent = ScreenGui  -- Parent to ScreenGui to avoid clipping
     HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0)
-    HomeBarContainer.Position = UDim2.new(0.5, 0, 1, 5)  -- 5px below MainFrame
-    HomeBarContainer.Size = UDim2.new(1, 0, 0, isMobile and 20 or 25)
+    HomeBarContainer.Position = UDim2.new(0.5, 0, 0.5, Sizes.WindowHeight/2 + 5)  -- Below MainFrame center
+    HomeBarContainer.Size = UDim2.new(0, Sizes.WindowWidth, 0, isMobile and 20 or 25)
     HomeBarContainer.BackgroundTransparency = 1
     HomeBarContainer.BorderSizePixel = 0
     HomeBarContainer.ZIndex = 100
@@ -763,6 +763,23 @@ function NextUI:Window(config)
     local HomeBarCorner = Instance.new("UICorner")
     HomeBarCorner.CornerRadius = UDim.new(1, 0)  -- Full rounded
     HomeBarCorner.Parent = HomeBarIndicator
+    
+    -- Update HomeBar position when MainFrame moves (sync position)
+    local function updateHomeBarPosition()
+        local mainFrameBottomY = MainFrame.Position.Y.Offset + Sizes.WindowHeight/2
+        HomeBarContainer.Position = UDim2.new(
+            MainFrame.Position.X.Scale,
+            MainFrame.Position.X.Offset,
+            MainFrame.Position.Y.Scale,
+            mainFrameBottomY + 5
+        )
+    end
+    
+    -- Initial position
+    updateHomeBarPosition()
+    
+    -- Update on MainFrame property change
+    MainFrame:GetPropertyChangedSignal("Position"):Connect(updateHomeBarPosition)
 
     -- Make draggable from header AND home bar
     MakeDraggable(MainFrame, Header)
