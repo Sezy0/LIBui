@@ -537,6 +537,7 @@ function NextUI:Window(config)
     local restoreStartPos = nil
     local restoreMouseDown = false
     local restoreConnection = nil
+    local lastMainFramePosition = MainFrame.Position  -- Track last position
     
     RestoreButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -574,18 +575,39 @@ function NextUI:Window(config)
                 
                 -- Only restore if it was NOT a drag
                 if not restoreDragging then
-                    -- It was a click, restore the window at logo position
+                    -- Restore window from logo position
                     local logoPos = RestoreButton.Position
+                    local buttonSize = isMobile and 50 or 55
                     
-                    -- Set MainFrame to logo position and show it
+                    -- Calculate MainFrame center position from logo (reverse of minimize calculation)
+                    local halfWidth = Sizes.WindowWidth / 2
+                    local halfHeight = Sizes.WindowHeight / 2
+                    local padding = buttonSize / 2 + 15
+                    
+                    -- Logo is at top-left corner, so add back half width/height to get center
+                    local mainFrameX = logoPos.X.Offset + halfWidth - padding
+                    local mainFrameY = logoPos.Y.Offset + halfHeight - padding
+                    
+                    local finalPosition = UDim2.new(
+                        logoPos.X.Scale,
+                        mainFrameX,
+                        logoPos.Y.Scale,
+                        mainFrameY
+                    )
+                    
+                    -- Start at logo position with small size
                     MainFrame.Position = logoPos
-                    MainFrame.Size = UDim2.new(0, 0, 0, 0)  -- Start small
+                    MainFrame.Size = UDim2.new(0, 0, 0, 0)
                     MainFrame.Visible = true
                     RestoreButton.Visible = false
                     
-                    -- Animate size (position stays at logo position)
+                    -- Animate to final position and size
                     local targetSize = UDim2.new(0, Sizes.WindowWidth, 0, Sizes.WindowHeight)
-                    Tween(MainFrame, {Size = targetSize}, 0.3)
+                    TweenService:Create(
+                        MainFrame,
+                        TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                        {Size = targetSize, Position = finalPosition}
+                    ):Play()
                 end
                 
                 -- Reset states
@@ -601,6 +623,9 @@ function NextUI:Window(config)
     MinimizeButton.MouseButton1Click:Connect(function()
         isMinimized = true
         
+        -- Save current MainFrame position before hiding
+        lastMainFramePosition = MainFrame.Position
+        
         -- Calculate logo position at top-left of MainFrame
         -- MainFrame has AnchorPoint 0.5,0.5 so position is at center
         -- Need to subtract half width/height to get top-left corner
@@ -609,7 +634,7 @@ function NextUI:Window(config)
         local halfHeight = Sizes.WindowHeight / 2
         local padding = buttonSize / 2 + 15  -- Half button size + 15px from edge
         
-        -- Calculate position
+        -- Calculate logo position at top-left corner of MainFrame
         local newX = MainFrame.Position.X.Offset - halfWidth + padding
         local newY = MainFrame.Position.Y.Offset - halfHeight + padding
         
