@@ -739,26 +739,32 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + Sizes.SectionSpacing)
     end)
 
-    -- iPhone-style Home Bar (di DALAM UI, bawah content)
+    -- iPhone-style Home Bar (di DALAM UI, bawah content) [DEBUG: RED!]
     local HomeBarContainer = Instance.new("Frame")
     HomeBarContainer.Name = "HomeBarContainer"
     HomeBarContainer.Parent = MainFrame
-    HomeBarContainer.Position = UDim2.new(0, 0, 1, -25)  -- 25px dari bawah MainFrame
-    HomeBarContainer.Size = UDim2.new(1, 0, 0, 25)
-    HomeBarContainer.BackgroundTransparency = 1
+    HomeBarContainer.Position = UDim2.new(0, 0, 1, -30)  -- 30px dari bawah
+    HomeBarContainer.Size = UDim2.new(1, 0, 0, 30)
+    HomeBarContainer.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Dark gray background
+    HomeBarContainer.BackgroundTransparency = 0.3  -- Slightly visible
     HomeBarContainer.BorderSizePixel = 0
     HomeBarContainer.ZIndex = 100
     
-    -- Home Bar Indicator (garis)
+    print("[DEBUG] HomeBar created! Position:", HomeBarContainer.Position)
+    print("[DEBUG] HomeBar Size:", HomeBarContainer.Size)
+    
+    -- Home Bar Indicator (garis) - BRIGHT RED FOR TESTING
     local HomeBarIndicator = Instance.new("Frame")
     HomeBarIndicator.Name = "Indicator"
     HomeBarIndicator.Parent = HomeBarContainer
     HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
     HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
-    HomeBarIndicator.Size = UDim2.new(0, isMobile and 70 or 90, 0, isMobile and 4 or 5)
-    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+    HomeBarIndicator.Size = UDim2.new(0, isMobile and 80 or 100, 0, isMobile and 5 or 6)
+    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- BRIGHT RED!
     HomeBarIndicator.BorderSizePixel = 0
     HomeBarIndicator.ZIndex = 101
+    
+    print("[DEBUG] HomeBar Indicator created! Color: RED")
     
     local HomeBarCorner = Instance.new("UICorner")
     HomeBarCorner.CornerRadius = UDim.new(1, 0)
