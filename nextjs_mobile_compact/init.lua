@@ -39,33 +39,33 @@ local Theme = {
     Shadow = Color3.fromRGB(0, 0, 0),
 }
 
--- Responsive sizes based on device (Rayfield-inspired with sidebar)
+-- Responsive sizes based on device (AGGRESSIVE MOBILE REDUCTION)
 local Sizes = {
-    -- Window (Desktop: 580x475, Mobile Portrait: 380x520)
+    -- Window sizes (MUCH SMALLER for mobile to fit screen!)
     -- Desktop: 580x475 (Sidebar 72px + Content 508px) - Rayfield-inspired
-    -- Mobile: 380x520 (Sidebar 55px + Content 325px) - Portrait optimized
-    -- Small Mobile: 340x500 (Sidebar 50px + Content 290px) - Aggressive
-    WindowWidth = isSmallMobile and 340 or (isMobile and 380 or 580),
-    WindowHeight = isSmallMobile and 500 or (isMobile and 520 or 475),
+    -- Mobile: 300x420 (Sidebar 45px + Content 255px) - AGGRESSIVE FIT!
+    -- Small Mobile: 280x400 (Sidebar 42px + Content 238px) - ULTRA COMPACT
+    WindowWidth = isSmallMobile and 280 or (isMobile and 300 or 580),
+    WindowHeight = isSmallMobile and 400 or (isMobile and 420 or 475),
     
-    -- Sidebar (compact on mobile)
-    SidebarWidth = isSmallMobile and 50 or (isMobile and 55 or 72),
+    -- Sidebar (much smaller on mobile!)
+    SidebarWidth = isSmallMobile and 42 or (isMobile and 45 or 72),
     
-    -- Topbar height
-    TopbarHeight = isSmallMobile and 36 or (isMobile and 40 or 45),
+    -- Topbar height (smaller!)
+    TopbarHeight = isSmallMobile and 32 or (isMobile and 34 or 45),
     
-    -- Fonts (slightly smaller on mobile)
-    TitleFont = isSmallMobile and 11 or (isMobile and 12 or 14),
-    SectionFont = isSmallMobile and 10 or (isMobile and 11 or 13),
-    TabFont = isSmallMobile and 8 or (isMobile and 9 or 11),
-    ButtonFont = isSmallMobile and 10 or (isMobile and 11 or 12),
-    LabelFont = isSmallMobile and 9 or (isMobile and 10 or 11),
+    -- Fonts (MUCH smaller for mobile!)
+    TitleFont = isSmallMobile and 10 or (isMobile and 11 or 14),
+    SectionFont = isSmallMobile and 9 or (isMobile and 10 or 13),
+    TabFont = isSmallMobile and 7 or (isMobile and 8 or 11),
+    ButtonFont = isSmallMobile and 9 or (isMobile and 10 or 12),
+    LabelFont = isSmallMobile and 8 or (isMobile and 9 or 11),
     
-    -- Spacing (more compact for mobile)
-    Padding = isSmallMobile and 6 or (isMobile and 8 or 10),
-    ButtonHeight = isSmallMobile and 26 or (isMobile and 28 or 32),
-    SectionSpacing = isSmallMobile and 6 or (isMobile and 8 or 12),
-    ElementSpacing = isSmallMobile and 4 or (isMobile and 5 or 6),
+    -- Spacing (ULTRA compact for mobile!)
+    Padding = isSmallMobile and 5 or (isMobile and 6 or 10),
+    ButtonHeight = isSmallMobile and 24 or (isMobile and 26 or 32),
+    SectionSpacing = isSmallMobile and 5 or (isMobile and 6 or 12),
+    ElementSpacing = isSmallMobile and 3 or (isMobile and 4 or 6),
 }
 
 print("[NextUI Mobile] Window size:", Sizes.WindowWidth, "x", Sizes.WindowHeight)
