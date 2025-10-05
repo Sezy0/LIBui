@@ -41,9 +41,9 @@ local Theme = {
 
 -- Responsive sizes based on device
 local Sizes = {
-    -- Window
+    -- Window (square on mobile)
     WindowWidth = isMobile and math.floor(ViewportSize.X * 0.78) or 550,
-    WindowHeight = isMobile and math.floor(ViewportSize.Y * 0.75) or 420,
+    WindowHeight = isMobile and math.floor(ViewportSize.X * 0.78) or 420,
     
     -- Sidebar
     SidebarWidth = isSmallMobile and 65 or (isMobile and 75 or 140),
