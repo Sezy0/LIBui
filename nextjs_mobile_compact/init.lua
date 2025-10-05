@@ -531,54 +531,31 @@ function NextUI:Window(config)
     RestorePadding.PaddingLeft = UDim.new(0, 8)
     RestorePadding.PaddingRight = UDim.new(0, 8)
 
-    -- Drag detection for restore button
+    -- Drag detection for restore button (FIXED LOGIC)
     local restoreDragging = false
     local restoreDragStart = nil
     local restoreStartPos = nil
-    local restoreInputActive = false
+    local restoreMouseDown = false
+    local restoreConnection = nil
     
     RestoreButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            restoreInputActive = true
-            restoreDragging = false  -- Reset drag state
+            restoreMouseDown = true
+            restoreDragging = false
             restoreDragStart = input.Position
             restoreStartPos = RestoreButton.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    restoreInputActive = false
-                    restoreDragStart = nil
-                    
-                    -- Check if it was a drag or click
-                    if not restoreDragging then
-                        -- It was a click, restore the window
-                        MainFrame.Position = RestoreButton.Position
-                        RestoreButton.Visible = false
-                        MainFrame.Visible = true
-                        
-                        -- Animate main frame
-                        local originalSize = MainFrame.Size
-                        MainFrame.Size = UDim2.new(0, 0, 0, 0)
-                        Tween(MainFrame, {Size = originalSize}, 0.3)
-                    end
-                    -- Reset after action
-                    restoreDragging = false
-                end
-            end)
         end
     end)
     
     RestoreButton.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if restoreInputActive and restoreDragStart then
+            if restoreMouseDown and restoreDragStart then
                 local delta = input.Position - restoreDragStart
-                -- If moved more than 5 pixels, it's a drag
-                if math.abs(delta.X) > 5 or math.abs(delta.Y) > 5 then
+                -- If moved more than 10 pixels, it's a drag
+                if math.abs(delta.X) > 10 or math.abs(delta.Y) > 10 then
                     restoreDragging = true
-                end
-                
-                -- Move button if dragging
-                if restoreDragging then
+                    
+                    -- Move button
                     RestoreButton.Position = UDim2.new(
                         restoreStartPos.X.Scale,
                         restoreStartPos.X.Offset + delta.X,
@@ -586,6 +563,31 @@ function NextUI:Window(config)
                         restoreStartPos.Y.Offset + delta.Y
                     )
                 end
+            end
+        end
+    end)
+    
+    RestoreButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if restoreMouseDown then
+                restoreMouseDown = false
+                
+                -- Only restore if it was NOT a drag
+                if not restoreDragging then
+                    -- It was a click, restore the window
+                    MainFrame.Position = RestoreButton.Position
+                    RestoreButton.Visible = false
+                    MainFrame.Visible = true
+                    
+                    -- Animate main frame
+                    local originalSize = MainFrame.Size
+                    MainFrame.Size = UDim2.new(0, 0, 0, 0)
+                    Tween(MainFrame, {Size = originalSize}, 0.3)
+                end
+                
+                -- Reset states
+                restoreDragging = false
+                restoreDragStart = nil
             end
         end
     end)
