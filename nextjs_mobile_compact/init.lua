@@ -15,8 +15,8 @@ local RunService = game:GetService("RunService")
 -- Detect device type based on viewport
 local Camera = workspace.CurrentCamera
 local ViewportSize = Camera.ViewportSize
-local isMobile = ViewportSize.X < 768 -- Mobile if width < 768px
-local isSmallMobile = ViewportSize.X < 480 -- Extra small mobile
+local isMobile = ViewportSize.X < 1000 -- Mobile if width < 1000px (more aggressive)
+local isSmallMobile = ViewportSize.X < 600 -- Extra small mobile
 
 print("[NextUI Mobile] Viewport:", ViewportSize.X, "x", ViewportSize.Y)
 print("[NextUI Mobile] Device type:", isMobile and "Mobile" or "Desktop")
@@ -42,8 +42,8 @@ local Theme = {
 -- Responsive sizes based on device
 local Sizes = {
     -- Window (square on mobile)
-    WindowWidth = isMobile and math.floor(ViewportSize.X * 0.78) or 550,
-    WindowHeight = isMobile and math.floor(ViewportSize.X * 0.78) or 420,
+    WindowWidth = isMobile and math.floor(ViewportSize.X * 0.70) or 550,
+    WindowHeight = isMobile and math.floor(ViewportSize.X * 0.70) or 420,
     
     -- Sidebar
     SidebarWidth = isSmallMobile and 65 or (isMobile and 75 or 140),
@@ -193,8 +193,8 @@ function NextUI:Auth(config)
     KeyGui.Parent = PlayerGui
 
     -- Auth frame size (compact for mobile)
-    local authWidth = isMobile and math.floor(ViewportSize.X * 0.78) or 450
-    local authHeight = isMobile and math.floor(ViewportSize.Y * 0.50) or 280
+    local authWidth = isMobile and math.floor(ViewportSize.X * 0.70) or 450
+    local authHeight = isMobile and math.floor(ViewportSize.Y * 0.45) or 280
 
     local MainFrame = Instance.new("Frame")
     MainFrame.Parent = KeyGui
