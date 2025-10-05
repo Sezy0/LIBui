@@ -503,8 +503,8 @@ function NextUI:Window(config)
     local RestoreButton = Instance.new("TextButton")
     RestoreButton.Name = "RestoreButton"
     RestoreButton.Parent = ScreenGui
-    RestoreButton.AnchorPoint = Vector2.new(1, 1)
-    RestoreButton.Position = UDim2.new(1, -10, 1, -10)
+    RestoreButton.AnchorPoint = Vector2.new(0.5, 0.5)
+    RestoreButton.Position = MainFrame.Position  -- Start at same position as MainFrame
     RestoreButton.Size = UDim2.new(0, isMobile and 45 or 50, 0, isMobile and 45 or 50)
     RestoreButton.BackgroundColor3 = Theme.Surface
     RestoreButton.BorderSizePixel = 0
@@ -524,11 +524,18 @@ function NextUI:Window(config)
     RestoreStroke.Color = Theme.Border
     RestoreStroke.Thickness = 2
 
+    -- Make restore button draggable too
+    MakeDraggable(RestoreButton, RestoreButton)
+
     -- Minimize functionality
     local isMinimized = false
     
     MinimizeButton.MouseButton1Click:Connect(function()
         isMinimized = true
+        
+        -- Save current position of MainFrame to RestoreButton
+        RestoreButton.Position = MainFrame.Position
+        
         MainFrame.Visible = false
         RestoreButton.Visible = true
         
@@ -541,6 +548,10 @@ function NextUI:Window(config)
 
     RestoreButton.MouseButton1Click:Connect(function()
         isMinimized = false
+        
+        -- Restore MainFrame to RestoreButton's current position
+        MainFrame.Position = RestoreButton.Position
+        
         RestoreButton.Visible = false
         MainFrame.Visible = true
         
