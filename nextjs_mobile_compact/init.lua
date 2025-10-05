@@ -438,8 +438,36 @@ function NextUI:Window(config)
     TitleLabel.TextSize = Sizes.TitleFont
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Close Button
+    -- Minimize Button
     local closeBtnSize = isMobile and 24 or 28
+    local MinimizeButton = Instance.new("TextButton")
+    MinimizeButton.Name = "MinimizeButton"
+    MinimizeButton.Parent = Header
+    MinimizeButton.AnchorPoint = Vector2.new(1, 0.5)
+    MinimizeButton.Position = UDim2.new(1, -Sizes.Padding - closeBtnSize - 6, 0.5, 0)
+    MinimizeButton.Size = UDim2.new(0, closeBtnSize, 0, closeBtnSize)
+    MinimizeButton.BackgroundColor3 = Theme.SurfaceHover
+    MinimizeButton.BorderSizePixel = 0
+    MinimizeButton.Text = "─"
+    MinimizeButton.Font = Enum.Font.GothamBold
+    MinimizeButton.TextColor3 = Theme.TextSecondary
+    MinimizeButton.TextSize = Sizes.TitleFont
+
+    local MinimizeCorner = Instance.new("UICorner")
+    MinimizeCorner.CornerRadius = UDim.new(0, 6)
+    MinimizeCorner.Parent = MinimizeButton
+
+    MinimizeButton.MouseEnter:Connect(function()
+        Tween(MinimizeButton, {BackgroundColor3 = Theme.Border})
+        Tween(MinimizeButton, {TextColor3 = Theme.Accent})
+    end)
+
+    MinimizeButton.MouseLeave:Connect(function()
+        Tween(MinimizeButton, {BackgroundColor3 = Theme.SurfaceHover})
+        Tween(MinimizeButton, {TextColor3 = Theme.TextSecondary})
+    end)
+
+    -- Close Button
     local CloseButton = Instance.new("TextButton")
     CloseButton.Name = "CloseButton"
     CloseButton.Parent = Header
@@ -469,6 +497,67 @@ function NextUI:Window(config)
 
     CloseButton.MouseButton1Click:Connect(function()
         ScreenGui:Destroy()
+    end)
+
+    -- Floating Restore Button (hidden by default)
+    local RestoreButton = Instance.new("TextButton")
+    RestoreButton.Name = "RestoreButton"
+    RestoreButton.Parent = ScreenGui
+    RestoreButton.AnchorPoint = Vector2.new(1, 1)
+    RestoreButton.Position = UDim2.new(1, -10, 1, -10)
+    RestoreButton.Size = UDim2.new(0, isMobile and 45 or 50, 0, isMobile and 45 or 50)
+    RestoreButton.BackgroundColor3 = Theme.Surface
+    RestoreButton.BorderSizePixel = 0
+    RestoreButton.Text = "◱"
+    RestoreButton.Font = Enum.Font.GothamBold
+    RestoreButton.TextColor3 = Theme.Accent
+    RestoreButton.TextSize = isMobile and 18 or 20
+    RestoreButton.Visible = false
+    RestoreButton.ZIndex = 100
+
+    local RestoreCorner = Instance.new("UICorner")
+    RestoreCorner.CornerRadius = UDim.new(1, 0)
+    RestoreCorner.Parent = RestoreButton
+
+    local RestoreStroke = Instance.new("UIStroke")
+    RestoreStroke.Parent = RestoreButton
+    RestoreStroke.Color = Theme.Border
+    RestoreStroke.Thickness = 2
+
+    -- Minimize functionality
+    local isMinimized = false
+    
+    MinimizeButton.MouseButton1Click:Connect(function()
+        isMinimized = true
+        MainFrame.Visible = false
+        RestoreButton.Visible = true
+        
+        -- Animate restore button
+        RestoreButton.Size = UDim2.new(0, 0, 0, 0)
+        Tween(RestoreButton, {
+            Size = UDim2.new(0, isMobile and 45 or 50, 0, isMobile and 45 or 50)
+        }, 0.3)
+    end)
+
+    RestoreButton.MouseButton1Click:Connect(function()
+        isMinimized = false
+        RestoreButton.Visible = false
+        MainFrame.Visible = true
+        
+        -- Animate main frame
+        local originalSize = MainFrame.Size
+        MainFrame.Size = UDim2.new(0, 0, 0, 0)
+        Tween(MainFrame, {Size = originalSize}, 0.3)
+    end)
+
+    RestoreButton.MouseEnter:Connect(function()
+        Tween(RestoreButton, {BackgroundColor3 = Theme.SurfaceHover})
+        Tween(RestoreButton, {Size = UDim2.new(0, (isMobile and 45 or 50) + 5, 0, (isMobile and 45 or 50) + 5)})
+    end)
+
+    RestoreButton.MouseLeave:Connect(function()
+        Tween(RestoreButton, {BackgroundColor3 = Theme.Surface})
+        Tween(RestoreButton, {Size = UDim2.new(0, isMobile and 45 or 50, 0, isMobile and 45 or 50)})
     end)
 
     -- Sidebar
