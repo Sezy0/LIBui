@@ -43,13 +43,13 @@ local Theme = {
 local Sizes = {
     -- Window sizes (SQUARE on mobile - width = height!)
     -- Desktop: 580x475 (Sidebar 72px + Content 508px) - Rayfield-inspired
-    -- Mobile: 300x300 (Sidebar 45px + Content 255px) - PERFECT SQUARE!
-    -- Small Mobile: 280x280 (Sidebar 42px + Content 238px) - MINI SQUARE
+    -- Mobile: 300x300 (Sidebar 65px + Content 235px) - PERFECT SQUARE!
+    -- Small Mobile: 280x280 (Sidebar 55px + Content 225px) - MINI SQUARE
     WindowWidth = isSmallMobile and 280 or (isMobile and 300 or 580),
     WindowHeight = isSmallMobile and 280 or (isMobile and 300 or 475),
     
-    -- Sidebar (much smaller on mobile!)
-    SidebarWidth = isSmallMobile and 42 or (isMobile and 45 or 72),
+    -- Sidebar (bigger for better visibility!)
+    SidebarWidth = isSmallMobile and 55 or (isMobile and 65 or 72),
     
     -- Topbar height (smaller!)
     TopbarHeight = isSmallMobile and 32 or (isMobile and 34 or 45),
