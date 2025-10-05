@@ -764,7 +764,7 @@ function NextUI:Window(config)
     HomeBarCorner.CornerRadius = UDim.new(1, 0)
     HomeBarCorner.Parent = HomeBarIndicator
 
-    -- Make draggable
+    -- Make draggable from Header AND HomeBar
     MakeDraggable(MainFrame, Header)
     MakeDraggable(MainFrame, HomeBarContainer)
 
