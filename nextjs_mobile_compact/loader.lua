@@ -2,11 +2,11 @@
 -- NextUI Mobile Compact - Loader Example
 -- ============================================
 
-local NextUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Sezy0/LIBui/main/nextjs_mobile_compact/init.lua"))()
+local NextUI = loadstring(game:HttpGet("https://pastebin.com/raw/cSDyP4Ta"))()
 
 -- Configuration
 local Config = {
-    UseKeySystem = false,  -- Set to true to enable key system
+    UseKeySystem = true,  -- Set to true to enable key system
     KeyUrl = "https://raw.githubusercontent.com/Sezy0/LIBui/main/key.txt",
     LogoId = "133508780883906",
     DiscordLink = "https://discord.gg/your-invite"
