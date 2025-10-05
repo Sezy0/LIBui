@@ -503,8 +503,8 @@ function NextUI:Window(config)
     local RestoreButton = Instance.new("ImageButton")
     RestoreButton.Name = "RestoreButton"
     RestoreButton.Parent = ScreenGui
-    RestoreButton.AnchorPoint = Vector2.new(0.5, 0.5)
-    RestoreButton.Position = MainFrame.Position  -- Start at same position as MainFrame
+    RestoreButton.AnchorPoint = Vector2.new(0.5, 0.5)  -- Center anchor like MainFrame
+    RestoreButton.Position = UDim2.new(0.5, 0, 0.5, 0)  -- Initial position (will be set on minimize)
     RestoreButton.Size = UDim2.new(0, isMobile and 50 or 55, 0, isMobile and 50 or 55)
     RestoreButton.BackgroundColor3 = Theme.Surface
     RestoreButton.BorderSizePixel = 0
@@ -604,13 +604,23 @@ function NextUI:Window(config)
         local buttonSize = isMobile and 50 or 55
         local halfWidth = Sizes.WindowWidth / 2
         local halfHeight = Sizes.WindowHeight / 2
-        local padding = buttonSize / 2 + 10  -- Half button size + 10px from edge
+        local padding = buttonSize / 2 + 15  -- Half button size + 15px from edge
+        
+        -- Calculate position
+        local newX = MainFrame.Position.X.Offset - halfWidth + padding
+        local newY = MainFrame.Position.Y.Offset - halfHeight + padding
+        
+        print("[Minimize Debug]")
+        print("MainFrame Position:", MainFrame.Position.X.Offset, MainFrame.Position.Y.Offset)
+        print("Window Size:", Sizes.WindowWidth, Sizes.WindowHeight)
+        print("Half Size:", halfWidth, halfHeight)
+        print("Logo Position:", newX, newY)
         
         RestoreButton.Position = UDim2.new(
             MainFrame.Position.X.Scale,
-            MainFrame.Position.X.Offset - halfWidth + padding,
+            newX,
             MainFrame.Position.Y.Scale,
-            MainFrame.Position.Y.Offset - halfHeight + padding
+            newY
         )
         
         MainFrame.Visible = false
