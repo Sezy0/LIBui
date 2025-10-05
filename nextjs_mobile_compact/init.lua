@@ -42,8 +42,8 @@ local Theme = {
 -- Responsive sizes based on device
 local Sizes = {
     -- Window
-    WindowWidth = isMobile and math.floor(ViewportSize.X * 0.85) or 550,
-    WindowHeight = isMobile and math.floor(ViewportSize.Y * 0.70) or 420,
+    WindowWidth = isMobile and math.floor(ViewportSize.X * 0.78) or 550,
+    WindowHeight = isMobile and math.floor(ViewportSize.Y * 0.65) or 420,
     
     -- Sidebar
     SidebarWidth = isSmallMobile and 65 or (isMobile and 75 or 140),
@@ -193,8 +193,8 @@ function NextUI:Auth(config)
     KeyGui.Parent = PlayerGui
 
     -- Auth frame size (compact for mobile)
-    local authWidth = isMobile and math.floor(ViewportSize.X * 0.85) or 450
-    local authHeight = isMobile and math.floor(ViewportSize.Y * 0.50) or 280
+    local authWidth = isMobile and math.floor(ViewportSize.X * 0.78) or 450
+    local authHeight = isMobile and math.floor(ViewportSize.Y * 0.48) or 280
 
     local MainFrame = Instance.new("Frame")
     MainFrame.Parent = KeyGui
