@@ -39,25 +39,31 @@ local Theme = {
     Shadow = Color3.fromRGB(0, 0, 0),
 }
 
--- Responsive sizes based on device
+-- Responsive sizes based on device (Rayfield-inspired with sidebar)
 local Sizes = {
-    -- Window (square on mobile)
-    WindowWidth = isMobile and math.floor(ViewportSize.X * 0.70) or 550,
-    WindowHeight = isMobile and math.floor(ViewportSize.X * 0.70) or 420,
+    -- Window (Desktop: 580x475, Mobile Portrait: 380x520)
+    -- Desktop: 580x475 (Sidebar 72px + Content 508px) - Rayfield-inspired
+    -- Mobile: 380x520 (Sidebar 55px + Content 325px) - Portrait optimized
+    -- Small Mobile: 340x500 (Sidebar 50px + Content 290px) - Aggressive
+    WindowWidth = isSmallMobile and 340 or (isMobile and 380 or 580),
+    WindowHeight = isSmallMobile and 500 or (isMobile and 520 or 475),
     
-    -- Sidebar
-    SidebarWidth = isSmallMobile and 65 or (isMobile and 75 or 140),
+    -- Sidebar (compact on mobile)
+    SidebarWidth = isSmallMobile and 50 or (isMobile and 55 or 72),
     
-    -- Fonts
-    TitleFont = isSmallMobile and 11 or (isMobile and 12 or 15),
+    -- Topbar height
+    TopbarHeight = isSmallMobile and 36 or (isMobile and 40 or 45),
+    
+    -- Fonts (slightly smaller on mobile)
+    TitleFont = isSmallMobile and 11 or (isMobile and 12 or 14),
     SectionFont = isSmallMobile and 10 or (isMobile and 11 or 13),
-    TabFont = isSmallMobile and 8 or (isMobile and 9 or 12),
-    ButtonFont = isSmallMobile and 10 or (isMobile and 11 or 13),
-    LabelFont = isSmallMobile and 9 or (isMobile and 10 or 12),
+    TabFont = isSmallMobile and 8 or (isMobile and 9 or 11),
+    ButtonFont = isSmallMobile and 10 or (isMobile and 11 or 12),
+    LabelFont = isSmallMobile and 9 or (isMobile and 10 or 11),
     
     -- Spacing
     Padding = isMobile and 8 or 12,
-    ButtonHeight = isMobile and 32 or 38,
+    ButtonHeight = isMobile and 34 or 38,
     SectionSpacing = isMobile and 10 or 15,
 }
 

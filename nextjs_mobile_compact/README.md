@@ -14,13 +14,13 @@ A lightweight, responsive version of NextUI specifically designed for mobile dev
 - 📏 **Responsive Sizing** - Adapts to any screen size
 - 🖱️ **Touch Support** - Full touch and mouse support
 
-## 📊 Size Comparison
+## 📊 Size Comparison (Rayfield-Inspired)
 
-| Device Type | Window Size | Sidebar Width | Font Sizes |
-|-------------|-------------|---------------|------------|
-| **Small Mobile** (<480px) | 92% x 70% | 65px | 8-11px |
-| **Mobile** (<768px) | 92% x 70% | 75px | 9-12px |
-| **Desktop** (≥768px) | 550x420 | 140px | 12-15px |
+| Device Type | Window Size | Sidebar Width | Content Width | Font Sizes |
+|-------------|-------------|---------------|---------------|------------|
+| **Small Mobile** (<600px) | 340 x 500 | 50px | 290px | 8-11px |
+| **Mobile** (<1000px) | 380 x 520 | 55px | 325px | 9-12px |
+| **Desktop** (≥1000px) | 580 x 475 | 72px | 508px | 11-14px |
 
 ## 🚀 Quick Start
 
@@ -91,23 +91,35 @@ NextUI:Auth({
 ### Viewport Detection
 ```lua
 -- Auto-detects based on screen width:
-isMobile = ViewportSize.X < 768
-isSmallMobile = ViewportSize.X < 480
+isMobile = ViewportSize.X < 1000  -- More aggressive mobile detection
+isSmallMobile = ViewportSize.X < 600  -- Extra small screens
 ```
 
-### Responsive Sizing
+### Responsive Sizing (Rayfield-Inspired)
 ```lua
--- Mobile (example: 393x851 Android):
-WindowWidth = 361px (92% of 393)
-WindowHeight = 595px (70% of 851)
-SidebarWidth = 75px
+-- Small Mobile (<600px - e.g., 393x851 Android):
+WindowWidth = 340px
+WindowHeight = 500px
+SidebarWidth = 50px
+Content = 290px
+Topbar = 36px
+Fonts = 8-11px
+
+-- Mobile (600-999px - e.g., tablets, landscape phones):
+WindowWidth = 380px
+WindowHeight = 520px (taller for portrait)
+SidebarWidth = 55px
+Content = 325px
+Topbar = 40px
 Fonts = 9-12px
 
--- Desktop (example: 1920x1080):
-WindowWidth = 550px
-WindowHeight = 420px
-SidebarWidth = 140px
-Fonts = 12-15px
+-- Desktop (≥1000px - e.g., 1920x1080):
+WindowWidth = 580px (Rayfield 500px + sidebar)
+WindowHeight = 475px (same as Rayfield)
+SidebarWidth = 72px
+Content = 508px (~Rayfield 500px)
+Topbar = 45px (same as Rayfield)
+Fonts = 11-14px
 ```
 
 ## 🎨 API Reference
