@@ -738,61 +738,24 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + Sizes.SectionSpacing)
     end)
 
-    -- iPhone-style Home Bar (below MainFrame)
-    print("[HomeBar] Creating HomeBar...")
-    print("[HomeBar] WindowSize:", Sizes.WindowWidth, Sizes.WindowHeight)
-    print("[HomeBar] isMobile:", isMobile)
-    
-    local HomeBarContainer = Instance.new("Frame")
-    HomeBarContainer.Name = "HomeBarContainer"
-    HomeBarContainer.Parent = ScreenGui
-    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0.5)
-    HomeBarContainer.Position = UDim2.new(0.5, 0, 0.5, Sizes.WindowHeight/2 + 15)  -- 15px below MainFrame
-    HomeBarContainer.Size = UDim2.new(0, Sizes.WindowWidth, 0, 30)
-    HomeBarContainer.BackgroundTransparency = 1
-    HomeBarContainer.BorderSizePixel = 0
-    HomeBarContainer.ZIndex = 1000
-    HomeBarContainer.Visible = true
-    
-    print("[HomeBar] Container Position:", HomeBarContainer.Position)
-    print("[HomeBar] Container Size:", HomeBarContainer.Size)
-
-    -- Home Bar Indicator (garis)
+    -- iPhone-style Home Bar (TEST - SIMPLE VERSION)
     local HomeBarIndicator = Instance.new("Frame")
-    HomeBarIndicator.Name = "Indicator"
-    HomeBarIndicator.Parent = HomeBarContainer
-    HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
-    HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
-    HomeBarIndicator.Size = UDim2.new(0, isMobile and 70 or 90, 0, isMobile and 4 or 5)
-    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+    HomeBarIndicator.Name = "HomeBarIndicator"
+    HomeBarIndicator.Parent = ScreenGui
+    HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0)
+    HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 200)  -- Fixed test position
+    HomeBarIndicator.Size = UDim2.new(0, 80, 0, 5)
+    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- WHITE for visibility
     HomeBarIndicator.BorderSizePixel = 0
-    HomeBarIndicator.ZIndex = 1001
-    HomeBarIndicator.Visible = true
+    HomeBarIndicator.ZIndex = 10000  -- Super high
     
-    print("[HomeBar] Indicator Size:", HomeBarIndicator.Size)
-    print("[HomeBar] Indicator Color:", HomeBarIndicator.BackgroundColor3)
-
     local HomeBarCorner = Instance.new("UICorner")
     HomeBarCorner.CornerRadius = UDim.new(1, 0)
     HomeBarCorner.Parent = HomeBarIndicator
     
-    print("[HomeBar] HomeBar created successfully!")
-    
-    -- Update HomeBar position when MainFrame moves
-    local function updateHomeBarPosition()
-        HomeBarContainer.Position = UDim2.new(
-            MainFrame.Position.X.Scale,
-            MainFrame.Position.X.Offset,
-            MainFrame.Position.Y.Scale,
-            MainFrame.Position.Y.Offset + Sizes.WindowHeight/2 + 15
-        )
-    end
-    
-    -- Initial position
-    updateHomeBarPosition()
-    
-    -- Update on drag
-    MainFrame:GetPropertyChangedSignal("Position"):Connect(updateHomeBarPosition)
+    print("[TEST] White bar created at position:", HomeBarIndicator.Position)
+    print("[TEST] White bar size:", HomeBarIndicator.Size)
+    print("[TEST] ZIndex:", HomeBarIndicator.ZIndex)
 
     -- Make draggable
     MakeDraggable(MainFrame, Header)
