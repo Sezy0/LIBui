@@ -716,14 +716,13 @@ function NextUI:Window(config)
         TabsContainer.CanvasSize = UDim2.new(0, 0, 0, TabsLayout.AbsoluteContentSize.Y + Sizes.Padding)
     end)
 
-    -- Content Container (adjust for HomeBar at bottom)
-    local homeBarHeight = 25
+    -- Content Container
     local contentPadding = Sizes.Padding
     local ContentFrame = Instance.new("ScrollingFrame")
     ContentFrame.Name = "ContentFrame"
     ContentFrame.Parent = MainFrame
     ContentFrame.Position = UDim2.new(0, Sizes.SidebarWidth + contentPadding, 0, headerHeight + contentPadding)
-    ContentFrame.Size = UDim2.new(1, -Sizes.SidebarWidth - contentPadding * 2, 1, -headerHeight - contentPadding * 2 - homeBarHeight)
+    ContentFrame.Size = UDim2.new(1, -Sizes.SidebarWidth - contentPadding * 2, 1, -headerHeight - contentPadding * 2)
     ContentFrame.BackgroundTransparency = 1
     ContentFrame.BorderSizePixel = 0
     ContentFrame.ScrollBarThickness = isMobile and 2 or 4
@@ -739,36 +738,47 @@ function NextUI:Window(config)
         ContentFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + Sizes.SectionSpacing)
     end)
 
-    -- iPhone-style Home Bar (di DALAM UI, bawah content) [DEBUG: RED!]
+    -- iPhone-style Home Bar (DI LUAR UI, seperti nextjs)
     local HomeBarContainer = Instance.new("Frame")
     HomeBarContainer.Name = "HomeBarContainer"
-    HomeBarContainer.Parent = MainFrame
-    HomeBarContainer.Position = UDim2.new(0, 0, 1, -30)  -- 30px dari bawah
-    HomeBarContainer.Size = UDim2.new(1, 0, 0, 30)
-    HomeBarContainer.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Dark gray background
-    HomeBarContainer.BackgroundTransparency = 0.3  -- Slightly visible
+    HomeBarContainer.Parent = ScreenGui  -- Parent ke ScreenGui, bukan MainFrame
+    HomeBarContainer.AnchorPoint = Vector2.new(0.5, 0)
+    HomeBarContainer.Position = UDim2.new(0.5, 0, 0.5, Sizes.WindowHeight/2 + 5)  -- 5px below MainFrame
+    HomeBarContainer.Size = UDim2.new(0, Sizes.WindowWidth, 0, 25)
+    HomeBarContainer.BackgroundTransparency = 1
     HomeBarContainer.BorderSizePixel = 0
     HomeBarContainer.ZIndex = 100
     
-    print("[DEBUG] HomeBar created! Position:", HomeBarContainer.Position)
-    print("[DEBUG] HomeBar Size:", HomeBarContainer.Size)
-    
-    -- Home Bar Indicator (garis) - BRIGHT RED FOR TESTING
+    -- Home Bar Indicator (garis iPhone style)
     local HomeBarIndicator = Instance.new("Frame")
     HomeBarIndicator.Name = "Indicator"
     HomeBarIndicator.Parent = HomeBarContainer
     HomeBarIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
     HomeBarIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
-    HomeBarIndicator.Size = UDim2.new(0, isMobile and 80 or 100, 0, isMobile and 5 or 6)
-    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- BRIGHT RED!
+    HomeBarIndicator.Size = UDim2.new(0, isMobile and 70 or 90, 0, isMobile and 4 or 5)
+    HomeBarIndicator.BackgroundColor3 = Color3.fromRGB(120, 120, 120)  -- Gray
     HomeBarIndicator.BorderSizePixel = 0
     HomeBarIndicator.ZIndex = 101
-    
-    print("[DEBUG] HomeBar Indicator created! Color: RED")
     
     local HomeBarCorner = Instance.new("UICorner")
     HomeBarCorner.CornerRadius = UDim.new(1, 0)
     HomeBarCorner.Parent = HomeBarIndicator
+    
+    -- Update HomeBar position when MainFrame moves
+    local function updateHomeBarPosition()
+        HomeBarContainer.Position = UDim2.new(
+            MainFrame.Position.X.Scale,
+            MainFrame.Position.X.Offset,
+            MainFrame.Position.Y.Scale,
+            MainFrame.Position.Y.Offset + Sizes.WindowHeight/2 + 5
+        )
+    end
+    
+    -- Initial position
+    updateHomeBarPosition()
+    
+    -- Update on MainFrame position change (drag)
+    MainFrame:GetPropertyChangedSignal("Position"):Connect(updateHomeBarPosition)
 
     -- Make draggable from Header AND HomeBar
     MakeDraggable(MainFrame, Header)
