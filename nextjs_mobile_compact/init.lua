@@ -574,15 +574,18 @@ function NextUI:Window(config)
                 
                 -- Only restore if it was NOT a drag
                 if not restoreDragging then
-                    -- It was a click, restore the window
-                    MainFrame.Position = RestoreButton.Position
-                    RestoreButton.Visible = false
-                    MainFrame.Visible = true
+                    -- It was a click, restore the window at logo position
+                    local logoPos = RestoreButton.Position
                     
-                    -- Animate main frame
-                    local originalSize = MainFrame.Size
-                    MainFrame.Size = UDim2.new(0, 0, 0, 0)
-                    Tween(MainFrame, {Size = originalSize}, 0.3)
+                    -- Set MainFrame to logo position and show it
+                    MainFrame.Position = logoPos
+                    MainFrame.Size = UDim2.new(0, 0, 0, 0)  -- Start small
+                    MainFrame.Visible = true
+                    RestoreButton.Visible = false
+                    
+                    -- Animate size (position stays at logo position)
+                    local targetSize = UDim2.new(0, Sizes.WindowWidth, 0, Sizes.WindowHeight)
+                    Tween(MainFrame, {Size = targetSize}, 0.3)
                 end
                 
                 -- Reset states
@@ -609,12 +612,6 @@ function NextUI:Window(config)
         -- Calculate position
         local newX = MainFrame.Position.X.Offset - halfWidth + padding
         local newY = MainFrame.Position.Y.Offset - halfHeight + padding
-        
-        print("[Minimize Debug]")
-        print("MainFrame Position:", MainFrame.Position.X.Offset, MainFrame.Position.Y.Offset)
-        print("Window Size:", Sizes.WindowWidth, Sizes.WindowHeight)
-        print("Half Size:", halfWidth, halfHeight)
-        print("Logo Position:", newX, newY)
         
         RestoreButton.Position = UDim2.new(
             MainFrame.Position.X.Scale,
