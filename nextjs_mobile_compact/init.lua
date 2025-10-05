@@ -3,8 +3,6 @@
 -- Optimized for Mobile + Desktop Compatible
 -- ============================================
 
-print("[NextUI Mobile] Loading library...")
-
 local NextUI = {}
 
 -- Services
@@ -18,9 +16,6 @@ local ViewportSize = Camera.ViewportSize
 local isMobile = ViewportSize.X < 1000 -- Mobile if width < 1000px (more aggressive)
 local isSmallMobile = ViewportSize.X < 600 -- Extra small mobile
 
-print("[NextUI Mobile] Viewport:", ViewportSize.X, "x", ViewportSize.Y)
-print("[NextUI Mobile] Device type:", isMobile and "Mobile" or "Desktop")
-print("[NextUI Mobile] Small mobile:", isSmallMobile)
 
 -- Theme Colors (Monochrome Grayscale)
 local Theme = {
@@ -68,7 +63,6 @@ local Sizes = {
     ElementSpacing = isSmallMobile and 3 or (isMobile and 4 or 6),
 }
 
-print("[NextUI Mobile] Window size:", Sizes.WindowWidth, "x", Sizes.WindowHeight)
 
 -- Utility: Make draggable
 local function MakeDraggable(frame, dragArea)
@@ -132,9 +126,6 @@ end)
 
 if not success then
     ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
-    print("[NextUI Mobile] Using PlayerGui")
-else
-    print("[NextUI Mobile] Using CoreGui")
 end
 
 -- Authentication System
@@ -1120,5 +1111,4 @@ function NextUI:Notification(title, message, duration)
     NotifFrame:Destroy()
 end
 
-print("[NextUI Mobile] Library loaded successfully!")
 return NextUI
