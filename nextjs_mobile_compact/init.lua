@@ -535,15 +535,20 @@ function NextUI:Window(config)
     local restoreDragging = false
     local restoreDragStart = nil
     local restoreStartPos = nil
+    local restoreInputActive = false
     
     RestoreButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            restoreInputActive = true
             restoreDragging = false  -- Reset drag state
             restoreDragStart = input.Position
             restoreStartPos = RestoreButton.Position
             
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
+                    restoreInputActive = false
+                    restoreDragStart = nil
+                    
                     -- Check if it was a drag or click
                     if not restoreDragging then
                         -- It was a click, restore the window
@@ -556,7 +561,8 @@ function NextUI:Window(config)
                         MainFrame.Size = UDim2.new(0, 0, 0, 0)
                         Tween(MainFrame, {Size = originalSize}, 0.3)
                     end
-                    -- If it was a drag, do nothing (just stay minimized)
+                    -- Reset after action
+                    restoreDragging = false
                 end
             end)
         end
@@ -564,26 +570,22 @@ function NextUI:Window(config)
     
     RestoreButton.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if restoreDragStart then
+            if restoreInputActive and restoreDragStart then
                 local delta = input.Position - restoreDragStart
                 -- If moved more than 5 pixels, it's a drag
                 if math.abs(delta.X) > 5 or math.abs(delta.Y) > 5 then
                     restoreDragging = true
                 end
-            end
-        end
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and restoreDragStart then
-            if restoreDragging then
-                local delta = input.Position - restoreDragStart
-                RestoreButton.Position = UDim2.new(
-                    restoreStartPos.X.Scale,
-                    restoreStartPos.X.Offset + delta.X,
-                    restoreStartPos.Y.Scale,
-                    restoreStartPos.Y.Offset + delta.Y
-                )
+                
+                -- Move button if dragging
+                if restoreDragging then
+                    RestoreButton.Position = UDim2.new(
+                        restoreStartPos.X.Scale,
+                        restoreStartPos.X.Offset + delta.X,
+                        restoreStartPos.Y.Scale,
+                        restoreStartPos.Y.Offset + delta.Y
+                    )
+                end
             end
         end
     end)
