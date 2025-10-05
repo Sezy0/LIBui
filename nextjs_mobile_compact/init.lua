@@ -39,14 +39,14 @@ local Theme = {
     Shadow = Color3.fromRGB(0, 0, 0),
 }
 
--- Responsive sizes based on device (AGGRESSIVE MOBILE REDUCTION)
+-- Responsive sizes based on device (SQUARE FOR MOBILE!)
 local Sizes = {
-    -- Window sizes (MUCH SMALLER for mobile to fit screen!)
+    -- Window sizes (SQUARE on mobile - width = height!)
     -- Desktop: 580x475 (Sidebar 72px + Content 508px) - Rayfield-inspired
-    -- Mobile: 300x420 (Sidebar 45px + Content 255px) - AGGRESSIVE FIT!
-    -- Small Mobile: 280x400 (Sidebar 42px + Content 238px) - ULTRA COMPACT
+    -- Mobile: 300x300 (Sidebar 45px + Content 255px) - PERFECT SQUARE!
+    -- Small Mobile: 280x280 (Sidebar 42px + Content 238px) - MINI SQUARE
     WindowWidth = isSmallMobile and 280 or (isMobile and 300 or 580),
-    WindowHeight = isSmallMobile and 400 or (isMobile and 420 or 475),
+    WindowHeight = isSmallMobile and 280 or (isMobile and 300 or 475),
     
     -- Sidebar (much smaller on mobile!)
     SidebarWidth = isSmallMobile and 42 or (isMobile and 45 or 72),
